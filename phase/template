@@ -1,0 +1,29 @@
+import sys
+import numpy as np
+import time
+import math
+sys.path.append("/home/pi/TANE2024/")
+sys.path.append("/home/pi/TANE2024/module/")
+import #ライブラリ名#
+
+class #クラス名#:
+  def __int__(self, #引数名#):
+    #ここでクラス変数やインスタンスの生成等#
+    if #インスタンス名# == None:     self.#インスタンス名# = #moduleディレクトリにあるファイル名#.#クラス名#
+    else:                self.#インスタンス名# = #引数で指定したクラス名#
+
+  def run(self):
+    #ここにメインのプログラム#
+
+  def #関数名#:
+    #ここにプログラム#
+
+def main():
+  try:
+    #ここに該当フェーズを通しで行うプログラム#
+
+  except KeyboardInterrupt:
+    #ここにエラーが出たときに停止するプログラム#
+
+if __name__ == "__main__":
+    main()
