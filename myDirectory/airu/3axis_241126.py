@@ -1,3 +1,4 @@
+#2024/11/26 Conta™ BM1422GMV 3軸地磁気センサモジュール
 import smbus2
 import time
 
