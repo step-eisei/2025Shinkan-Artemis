@@ -42,6 +42,7 @@ class Land:
                 i=0 #やり直し
                 print("yet")
             time.sleep(0.5)
+            #ビョウソク6m
         print("sky")
     
     #地上まで降りたか判定
