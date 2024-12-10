@@ -118,7 +118,7 @@ def main():
         while True:
             out_x, out_y, out_z, norm = low_g_acc.get_acc_raw()
             now = datetime.datetime.now()
-            f_acc_logs.write(f'{now}, {out_x}, {out_y}, {out_z}, {math.sqrt(out_x**2 + out_y**2 + out_z**2)}\n')
+            f_acc_logs.write(f'{now},{out_x},{out_y},{out_z},{math.sqrt(out_x**2 + out_y**2 + out_z**2)}\n')
             print(f"{out_x}, {out_y}, {out_z}, {norm}")
             time.sleep(0.1)
     except:
