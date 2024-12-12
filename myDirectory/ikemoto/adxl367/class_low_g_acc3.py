@@ -18,8 +18,8 @@ class LowGAcc3:
         self.acc_z = 0
         self.acc_norm = 0
 
-        # self.ADDR = 0x1d
-        self.ADDR = 0x53
+        self.ADDR = 0x1d
+        # self.ADDR = 0x53
         self.i2c = smbus.SMBus(1)
 
         # センサーの所設定
