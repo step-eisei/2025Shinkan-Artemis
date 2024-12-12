@@ -123,7 +123,7 @@ def main():
             print(f"{out_x}, {out_y}, {out_z}, {norm}")
             time.sleep(0.1)
     except:
-        low_g_acc.f_acc_logs.close()
+        f_acc_logs.close()
 
 def test_calib():
     low_g_acc = LowGAcc3(save_log_flag = True)
