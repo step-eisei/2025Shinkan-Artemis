@@ -2,7 +2,7 @@ import RPi.GPIO as GPIO
 import time
 
 class Nicrom():
-    def __init__(self, pin=33):
+    def __init__(self, pin=29):
         self.pin = pin
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(self.pin,  GPIO.OUT)
