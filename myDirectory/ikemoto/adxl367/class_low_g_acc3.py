@@ -106,7 +106,7 @@ class LowGAcc3:
 def main():
     # logの設定
     # csv log file ready
-    fmt_name = "/home/pi/TANE2025/record/test/record/acc_logs_ADXL367_{0:%Y%m%d-%H%M%S}.csv".format(datetime.datetime.now())
+    fmt_name = "/home/pi/TANE2025/record/test/acc_logs_ADXL367_{0:%Y%m%d-%H%M%S}.csv".format(datetime.datetime.now())
     f_acc_logs = codecs.open(fmt_name, mode='w', encoding="utf-8")
 
     header_value = u"yyyy-mm-dd hh:mm:ss.mmmmmm,x[g],y[g],z[g],norm[g]"
