@@ -18,7 +18,8 @@ class LowGAcc3:
         self.acc_z = 0
         self.acc_norm = 0
 
-        self.ADDR = 0x1d
+        # self.ADDR = 0x1d
+        self.ADDR = 0x53
         self.i2c = smbus.SMBus(1)
 
         # センサーの所設定
@@ -122,7 +123,7 @@ def main():
             print(f"{out_x}, {out_y}, {out_z}, {norm}")
             time.sleep(0.1)
     except:
-        low_g_acc.f_acc_logs.close()
+        f_acc_logs.close()
 
 def test_calib():
     low_g_acc = LowGAcc3(save_log_flag = True)
