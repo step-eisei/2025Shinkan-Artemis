@@ -112,7 +112,7 @@ def main():
     header_value = u"yyyy-mm-dd hh:mm:ss.mmmmmm,x[g],y[g],z[g],norm[g]"
     f_acc_logs.write(header_value+"\n")
     
-    low_g_acc = LowGAcc3(save_log_flag = True)
+    low_g_acc = LowGAcc3()
     
     try:
         while True:
