@@ -7,6 +7,7 @@ import time
 
 import numpy as np
 import smbus
+import threading
 
 
 class LowGAcc3:
@@ -25,6 +26,10 @@ class LowGAcc3:
         # センサーの所設定
         self.i2c.write_byte_data(self.ADDR, 0x2C, 0x03) # output data rate 100 Hz
         self.i2c.write_byte_data(self.ADDR, 0x2D, 0x02)
+
+        # バックグラウンドで加速度を取得する
+        thread = threading.Thread(target=self.get_acc_raw, daemon=True)
+        thread.start()
 
         time.sleep(0.5)
 
