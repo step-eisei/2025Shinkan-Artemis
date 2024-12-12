@@ -43,8 +43,8 @@ try:
     
         #データ変換
         out_x = (xh << 6) | (xl >> 2)
-        out_y = (yh << 8) | (yl >> 2)
-        out_z = (zh << 8) | (zl >> 2)
+        out_y = (yh << 6) | (yl >> 2)
+        out_z = (zh << 6) | (zl >> 2)
     
         #極性判断
         if out_x >= 8192:
