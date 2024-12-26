@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
 # 使用センサー: ADXL375
 import codecs
+from collections import deque
+import csv
+
 import datetime
 import math
 import time
 
 import numpy as np
 import spidev
+import threading
 
 
 class HighGAcc3:
@@ -30,6 +34,10 @@ class HighGAcc3:
         self.spi.xfer2([0x2D, 0x08]) # 測定スタート
 
         time.sleep(0.5)
+
+        high_g_thread = threading.Thread(target=self.record_high_g)
+        high_g_thread.daemon = True
+        high_g_thread.start()
 
     def apply_offset_list(offset_list, x, y, z):
         xyz_array = np.array([x, y, z])
@@ -101,6 +109,42 @@ class HighGAcc3:
         self.acc_norm = math.sqrt(x**2 + y**2 + z**2)
 
         return x, y, z, math.sqrt(x**2 + y**2 + z**2)
+    
+    def record_high_g(self):
+        HIGH_G_THRESHOLD = 50
+        QUEUE_SIZE = 50
+        time_acc_queue = deque(maxlen=QUEUE_SIZE)
+        high_g_detected_index = None  # HIGH_G検出位置
+
+        def log_high_g_event(queue):
+            now = datetime.datetime.now()
+            filename = "/home/pi/TANE2025/record/high_g_log_{0:%Y%m%d-%H%M%S}.csv".format(now)
+            with open(filename, "w", newline="") as f:
+                csv_writer = csv.writer(f)
+                csv_writer.writerow(["time", "acc_x", "acc_y", "acc_z", "acc_norm"])
+                for time_acc in queue:
+                    csv_writer.writerow(time_acc)
+                    print(time_acc)
+
+        while True:
+            acc_x, acc_y, acc_z, acc_norm = self.get_acc_raw()
+            now = datetime.datetime.now()
+            time_acc_queue.append([now, acc_x, acc_y, acc_z, acc_norm])
+
+            # 高G検出でインデックスを記録
+            if acc_norm > HIGH_G_THRESHOLD and high_g_detected_index is None:
+                print("High G detected!")
+                high_g_detected_index = len(time_acc_queue) - 1
+
+            # 中心に高Gデータが来るように待機する
+            if high_g_detected_index is not None and len(time_acc_queue) == QUEUE_SIZE:
+                center_index = QUEUE_SIZE // 2
+                if high_g_detected_index == center_index:
+                    log_high_g_event(time_acc_queue)
+                    high_g_detected_index = None  # リセット
+                else:
+                    high_g_detected_index -= 1  # センターシフトのためインデックス修正
+
 
 def main():
     # logの設定
