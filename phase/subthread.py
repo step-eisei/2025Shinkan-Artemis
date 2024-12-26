@@ -73,7 +73,7 @@ class Subthread:
                 data = data.encode()
                 data = data + b'\n'
                 self.ser.write(data)
-                time.sleep(3)
+                # time.sleep(3)
             else:
                 break
             
