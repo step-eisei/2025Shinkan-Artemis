@@ -10,6 +10,7 @@ import time
 
 import numpy as np
 import spidev
+import threading
 
 
 class HighGAcc3:
@@ -33,6 +34,10 @@ class HighGAcc3:
         self.spi.xfer2([0x2D, 0x08]) # 測定スタート
 
         time.sleep(0.5)
+
+        high_g_thread = threading.Thread(target=self.record_high_g)
+        high_g_thread.daemon = True
+        high_g_thread.start()
 
     def apply_offset_list(offset_list, x, y, z):
         xyz_array = np.array([x, y, z])
@@ -139,6 +144,7 @@ class HighGAcc3:
                     high_g_detected_index = None  # リセット
                 else:
                     high_g_detected_index -= 1  # センターシフトのためインデックス修正
+
 
 def main():
     # logの設定
