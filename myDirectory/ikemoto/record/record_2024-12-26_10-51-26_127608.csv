@@ -1,0 +1,2 @@
+comment,time,phase,baro,latitude,longitude,duty_R,duty_L,theta,cornangle,distance
+threading,0.0036818981170654297,land,-1,36.111550666666666,140.09900683333333,-1,-1,-1,,-1
