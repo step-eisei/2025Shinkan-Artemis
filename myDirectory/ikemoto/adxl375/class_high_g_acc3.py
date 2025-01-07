@@ -39,7 +39,7 @@ class HighGAcc3:
         high_g_thread.daemon = True
         high_g_thread.start()
 
-    def apply_offset_list(offset_list, x, y, z):
+    def apply_offset_list(self, offset_list, x, y, z):
         xyz_array = np.array([x, y, z])
         for i, offset in enumerate(offset_list):
             offset_array = np.array(offset)
@@ -59,7 +59,7 @@ class HighGAcc3:
 
         self.calibrated = True
 
-    def hosuu_to_normal(num):
+    def hosuu_to_normal(self, num):
         if num > 32768:
             num -= 65536
         return num
