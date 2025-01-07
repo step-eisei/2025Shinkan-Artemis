@@ -64,6 +64,9 @@ class HighGAcc3:
             num -= 65536
         return num
     
+    def check_out_range(self, x, y, z):
+        return x >= 200 or x <= -200 or y >= 200 or y <= -200 or z >= 200 or z <= -200
+    
     def get_acc_raw(self):
         # 単位はGです
         try:
@@ -128,6 +131,8 @@ class HighGAcc3:
 
         while True:
             acc_x, acc_y, acc_z, acc_norm = self.get_acc_raw()
+            if self.check_out_range(acc_x, acc_y, acc_z):
+                continue
             now = datetime.datetime.now()
             time_acc_queue.append([now, acc_x, acc_y, acc_z, acc_norm])
 
@@ -160,6 +165,8 @@ def main():
     try:
         while True:
             out_x, out_y, out_z, norm = low_g_acc.get_acc_raw()
+            if low_g_acc.check_out_range(out_x, out_y, out_z):
+                continue
             now = datetime.datetime.now()
             f_acc_logs.write(f'{now},{out_x},{out_y},{out_z},{math.sqrt(out_x**2 + out_y**2 + out_z**2)}\n')
             print(f"{out_x}, {out_y}, {out_z}, {norm}")
