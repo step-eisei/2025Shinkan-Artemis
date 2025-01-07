@@ -127,7 +127,7 @@ class HighGAcc3:
                 csv_writer.writerow(["time", "acc_x", "acc_y", "acc_z", "acc_norm"])
                 for time_acc in queue:
                     csv_writer.writerow(time_acc)
-                    print(time_acc)
+                    # print(time_acc)
 
         while True:
             acc_x, acc_y, acc_z, acc_norm = self.get_acc_raw()
@@ -138,7 +138,7 @@ class HighGAcc3:
 
             # 高G検出でインデックスを記録
             if acc_norm > HIGH_G_THRESHOLD and high_g_detected_index is None:
-                print("High G detected!")
+                # print("High G detected!")
                 high_g_detected_index = len(time_acc_queue) - 1
 
             # 中心に高Gデータが来るように待機する
