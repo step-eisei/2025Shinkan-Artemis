@@ -10,6 +10,9 @@ def hosuu_to_normal(num):
         num -= 65536
     return num
 
+def check_out_range( x, y, z):
+    return x >= 200 or x <= -200 or y >= 200 or y <= -200 or z >= 200 or z <= -200
+
 # 初期設定
 spi = spidev.SpiDev()
 spi.open(0,0)
@@ -62,6 +65,9 @@ try:
         x_data = x_data * 200 / 0xFFF
         y_data = y_data * 200 / 0xFFF
         z_data = z_data * 200 / 0xFFF
+
+        if check_out_range(x_data, y_data, z_data):
+            continue
 
         if OFFSET_ADJUST:
             if offset_count >= 0 :
