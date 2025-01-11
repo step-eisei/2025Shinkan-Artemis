@@ -1,7 +1,7 @@
 import sys
 sys.path.append("/home/pi/TANE2025/")
 from module import class_pressure
-from phase import subthread
+#from phase import subthread
 import time
 
 class Land:
@@ -11,8 +11,9 @@ class Land:
         else:                    self.get_pressure = get_pressure
 
         if subth == None:
-            self.subth = subthread.Subthread(pressure=self.get_pressure)
-            self.subth.run()
+            pass
+            #self.subth = subthread.Subthread(pressure=self.get_pressure)
+            #self.subth.run()
         else:                    self.subth = subth
 
         self.sky=sky   #上空まで上がったか判定するときの大気圧の変化の閾値 要調整
@@ -53,9 +54,9 @@ class Land:
         n = 0
         i=0
         start_sky_time = time.time()
-        limit_sky_time = None # 上空検知してから15分経過したら強制的に着地判定
+        limit_sky_time = 999999999 # 上空検知してから15分経過したら強制的に着地判定
         Start = False
-        while i<=10 and ( (time.time() - start_sky_time) and Start) < limit_sky_time:
+        while   (time.time() - start_sky_time< limit_sky_time) and not Start:
             self.get_pressure.read() #毎回pressure更新
             print(self.get_pressure.pressure)
             if self.start_pressure-self.get_pressure.pressure < self.land: #閾値暫定
@@ -69,13 +70,13 @@ class Land:
                 now_pressure = self.get_pressure.pressure
                 time.sleep(5)
                 self.get_pressure.read()
-                if self.get_pressure.pressure - now_pressure > 0.1:
+                if self.get_pressure.pressure - now_pressure > 0.2:
                     n += 1
                 else:
                     n = 0
                     print("fall_yet")
             if n >=1:
-                start_sky_time = time.time
+                start_sky_time = time.time()
                 limit_sky_time = 15*60 # 上空検知をスタート
                 n = -1
                 print("fall start")
@@ -92,11 +93,11 @@ class Land:
   
 
     def run(self):
-        self.subth.phase=0
-        self.sky_pressure()
-        self.subth.record(comment="sky")
+        #self.subth.phase=0
+        #self.sky_pressure()
+        #self.subth.record(comment="sky")
         self.land_pressure()
-        self.subth.record(comment="land")
+        #self.subth.record(comment="land")
 
 def main(sky=1.0, land=0.1): #上空判定，地上判定の閾値
     try:
