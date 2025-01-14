@@ -244,7 +244,7 @@ class Gps:
       if "*" not in gpsChars:
           return False
 
-      gpsStr, chkSum = gpsChars.split('*')    
+      gpsStr, chkSum = gpsChars.split('*')
       gpsComponents = gpsStr.split(',')
       gpsStart = gpsComponents[0]
 
@@ -269,7 +269,11 @@ class Gps:
               lon = self.GPSDAT["lon"]
               if(lat!='' and lon!='' and lat!=None and lon!=None):
                 self.latitude = int(lat[0:2]) + float(lat[2:]) / 60
+                if self.GPSDAT["latDir"] == "S":
+                   self.latitude *= -1
                 self.longitude = int(lon[0:3]) + float(lon[3:]) / 60
+                if self.GPSDAT["lonDir"] == "W":
+                   self.longitude *= -1
 
               if(self.debug):
                  #print(gpsChars)
@@ -291,7 +295,11 @@ class Gps:
             lon = self.GNS["lon"]
             if(lat!='' and lon!='' and lat!=None and lon!=None):
               self.latitude = int(lat[0:2]) + float(lat[2:]) / 60
+              if self.GNS["NS"] == "S":
+                 self.latitude *= -1
               self.longitude = int(lon[0:3]) + float(lon[3:]) / 60
+              if self.GNS["EW"] == "W":
+                 self.longitude *= -1
 
             if(self.debug):
               #print(gpsChars)
