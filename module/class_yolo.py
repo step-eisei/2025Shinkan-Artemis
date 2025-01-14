@@ -52,8 +52,8 @@ def clip_y(value):
 class CornDetect:
     def __init__(
             self,
-            exp=get_exp('/home/pi/TANE2025/myDirectory/ikemoto/YOLOX/configfrom_yolox_s.py'),
-            weights='/home/pi/TANE2025/myDirectory/matsushima/cone/best_ckpt.pth',
+            exp=get_exp('/home/pi/TANE2025/module/yolo_files/configfrom_yolox_s.py'),
+            weights='/home/pi/TANE2025/module/yolo_files/cone/best_ckpt.pth',
             cls_names=COCO_CLASSES,
             decoder=None,
             device="cpu",
@@ -71,7 +71,7 @@ class CornDetect:
         self.device = device
         self.preproc = ValTransform(legacy=False)
 
-        exp = get_exp('/home/pi/TANE2025/myDirectory/ikemoto/YOLOX/configfrom_yolox_s.py')
+        exp = get_exp('/home/pi/TANE2025/module/yolo_files/configfrom_yolox_s.py')
         exp.test_conf = 0.25
         exp.nmsthre = 0.45
         exp.test_size = (640, 640)
@@ -133,7 +133,7 @@ class CornDetect:
 
 
 def main():
-    exp = get_exp('/home/pi/TANE2025/myDirectory/ikemoto/YOLOX/configfrom_yolox_s.py')
+    exp = get_exp('/home/pi/TANE2025/module/yolo_files/configfrom_yolox_s.py')
     exp.test_conf = 0.25
     exp.nmsthre = 0.45
     exp.test_size = (640, 640)
