@@ -57,10 +57,7 @@ class CornDetect:
             cls_names=COCO_CLASSES,
             decoder=None,
             device="cpu",
-            old_goal_or_new_goal="old_goal"
     ):
-        if old_goal_or_new_goal == "new_goal":
-            weights='/home/pi/TANE2025/myDirectory/matsushima/ball/best_ckpt.pth'
         self.weight = weights
         self.cls_names = cls_names
         self.decoder = decoder
@@ -138,7 +135,7 @@ def main():
     exp.nmsthre = 0.45
     exp.test_size = (640, 640)
 
-    test = CornDetect(exp=exp, old_goal_or_new_goal="new_goal")
+    test = CornDetect(exp=exp)
 
     camera = cv2.VideoCapture(0)
     count = 0
