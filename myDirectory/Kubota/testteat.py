@@ -55,8 +55,7 @@ class Land:
         i=0
         start_sky_time = time.time()
         limit_sky_time = 999999999 # 上空検知してから15分経過したら強制的に着地判定
-        Start = False
-        while   (time.time() - start_sky_time< limit_sky_time) and not Start:
+        while   (time.time() - start_sky_time< limit_sky_time):
             self.get_pressure.read() #毎回pressure更新
             print(self.get_pressure.pressure)
             if self.start_pressure-self.get_pressure.pressure < self.land: #閾値暫定
@@ -80,7 +79,6 @@ class Land:
                 limit_sky_time = 15*60 # 上空検知をスタート
                 n = -1
                 print("fall start")
-                Start = True
 
             
             time.sleep(0.1)
