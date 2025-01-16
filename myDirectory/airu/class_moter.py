@@ -1,280 +1,113 @@
-import sys
-sys.path.append("/home/pi/TANE2025/module")
-import RPi.GPIO as GPIO
+# 2024/11/26 Conta™ BM1422GMV 3軸地磁気センサモジュール
+from smbus import SMBus
 import time
-import random
+import numpy as np
 import math
-#import class_mag3
-import class_mag3
 import csv
-# right = A, left = B
 
-class Motor():
-    def __init__(self, pwm=100, rightIN1=16, rightIN2=18, leftIN1=19, leftIN2=21, geomag=None):#19 21 16 18
-        self.rightIN1 = rightIN1
-        self.rightIN2 = rightIN2
-        self.leftIN1 = leftIN1
-        self.leftIN2 = leftIN2
-        if geomag == None:
-            with open ('/home/pi/TANE2025/prep/calibration_geomag.csv', 'r') as f :# goal座標取得プログラムより取得
-                reader = csv.reader(f)
-                line = [row for row in reader]
-                rads = [float(line[1][i]) for i in range(3)]
-                aves = [float(line[2][i]) for i in range(3)]
-            f.close()
-            self.geomag = class_mag3.Nineaxis(True, rads, aves)
-        else: self.geomag = geomag
-        self.geomag.calibrated = True
-        self.duty_R_now = -1
-        self.duty_L_now = -1
-        
-        GPIO.setmode(GPIO.BOARD) # GPIOnを指定するように設定
-        GPIO.setup(self.rightIN1, GPIO.OUT)
-        GPIO.setup(self.rightIN2, GPIO.OUT)
-        GPIO.setup(self.leftIN1, GPIO.OUT)
-        GPIO.setup(self.leftIN2, GPIO.OUT)
-        self.pwms = {}
-        self.pwms["rightIN1"] = GPIO.PWM(self.rightIN1, pwm) # pin, Hz
-        self.pwms["rightIN2"] = GPIO.PWM(self.rightIN2, pwm) # pin, Hz
-        self.pwms["leftIN1"] = GPIO.PWM(self.leftIN1, pwm) # pin, Hz
-        self.pwms["leftIN2"] = GPIO.PWM(self.leftIN2, pwm) # pin, Hz
-        
-        self.pwms["rightIN1"].start(0)
-        self.pwms["rightIN2"].start(0)
-        self.pwms["leftIN1"].start(0)
-        self.pwms["leftIN2"].start(0)
-    
-    def changeduty(self, duty_R, duty_L):
-        #duty_R = duty_R * 1.2
-        if duty_R > 0:
-            self.pwms["rightIN1"].ChangeDutyCycle(abs(duty_R))
-            self.pwms["rightIN2"].ChangeDutyCycle(0)
-        elif duty_R < 0:
-            self.pwms["rightIN1"].ChangeDutyCycle(0)
-            self.pwms["rightIN2"].ChangeDutyCycle(abs(duty_R))
-        else:
-            self.pwms["rightIN1"].ChangeDutyCycle(0)
-            self.pwms["rightIN2"].ChangeDutyCycle(0)
+class Mag3:
 
-        if duty_L > 0:
-            self.pwms["leftIN1"].ChangeDutyCycle(abs(duty_L))
-            self.pwms["leftIN2"].ChangeDutyCycle(0)
-        elif duty_L < 0:
-            self.pwms["leftIN1"].ChangeDutyCycle(0)
-            self.pwms["leftIN2"].ChangeDutyCycle(abs(duty_L))
-        else:
-            self.pwms["leftIN1"].ChangeDutyCycle(0)
-            self.pwms["leftIN2"].ChangeDutyCycle(0)
-        self.duty_R_now = duty_R
-        self.duty_L_now = duty_L
+    def __init__(self, calibrated=False, rads=[1.0, 1.0, 1.0], aves=[0.0, 0.0, 0.0]):
+        self.theta=-1
+        self.theta_absolute=-1
+        self.calibrated = calibrated
+        self.rads = rads
+        self.aves = aves
+        self.mag_x = 0
+        self.mag_y = 0
+        self.mag_z = 0
 
-    def currentblock(self, duty_R, duty_L):
-        # prevent Overcurrent
-        if(duty_R != 0 and self.duty_R_now == 0): duty_R = 5
-        else: duty_R = self.duty_R_now
-        if(duty_L != 0 and self.duty_L_now == 0): duty_L = 5
-        else: duty_L = self.duty_L_now
-        self.changeduty(duty_R, duty_L)
-        time.sleep(1)
+        # I2Cのアドレス指定
+        self.MAG_ADDR = 0x13
+        self.MAG_R_ADDR = 0x42
+        self.i2c = SMBus(1)
+        # レジスタアドレス
+        REG_WIA = 0x0F  # Who am I レジスタ
+        REG_CNTL1 = 0x1B  # 制御レジスタ1
+        REG_CNTL2 = 0x1C  # 制御レジスタ2
+        REG_CNTL3 = 0x1D  # 制御レジスタ3
+        REG_CNTL4 = 0x5C  # 制御レジスタ4
+        REG_CNTL5 = 0x5D  # 制御レジスタ5
+        REG_DATAX = 0x10  # X軸データレジスタ（下位ビット）
 
-    def forward(self, duty_target, t, duty_R=-1, duty_L=-1, duty_increment=5, time_sleep_per_loop=0.1):
-        if duty_R != -1:
-            duty_target = (duty_R + duty_L) /2
-        else:
-            duty_R = duty_target
-            duty_L = duty_target
-        epoch = int(abs(duty_target) / duty_increment)
-        for i in range(epoch):
-            r = int(duty_R * (i+1)/epoch)
-            l = r = int(duty_L * (i+1)/epoch)
-            self.changeduty(r, l)
-            time.sleep(time_sleep_per_loop)
-        
-        self.changeduty(duty_R, duty_L)
-
-        time.sleep(t)
-
-        for i in range(epoch):
-            r = int(duty_R * (epoch - i - 1) / epoch)
-            l = int(duty_L * (epoch - i - 1) / epoch)
-            self.changeduty(r, l)
-            time.sleep(time_sleep_per_loop)
-        
-        self.changeduty(0, 0)
-
-    def angle_difference(self, from_angle, to_angle):
-        angle = to_angle-from_angle
-        if(angle<-180): return angle+360
-        elif(angle>180): return angle-360
-        return angle
-    
-    def rotate(self, angle, duty=28, threshold=3.0):
-        self.geomag.get_mag()
-        angle_new = self.geomag.theta
-        if angle_new > 180: angle_new -=360
-        if(angle<-180): return angle+360
-        elif(angle>180): return angle-360
-        angle_diff = angle
-        angle_target = angle_new + angle
-        if angle_target > 180:
-            angle_target -= 360
-        elif angle_target < -180:
-            angle_target += 360
-        
-        time_const = 0.008
-        total = 10
-
-        print(f"target:{angle_target}")
-
-        try:
-            for i in range(total):
-                if angle_diff > 0:
-                    self.changeduty(duty_R=-duty, duty_L=duty)
-                else:
-                    self.changeduty(duty_R=duty, duty_L=-duty)
-                
-                sleep_time = time_const * min(abs(angle_diff),20)
-
-                time.sleep(sleep_time)
-                self.changeduty(0,0)
+        # mag_data_setup : 地磁気値をセットアップ
+        data = self.i2c.read_byte_data(self.MAG_ADDR, 0x4B)
+        if(data == 0):
+                self.i2c.write_byte_data(self.MAG_ADDR, 0x4B, 0x83)
                 time.sleep(0.5)
+        self.i2c.write_byte_data(self.MAG_ADDR, 0x4B, 0x01)
+        self.i2c.write_byte_data(self.MAG_ADDR, 0x4C, 0x00)
+        self.i2c.write_byte_data(self.MAG_ADDR, 0x4E, 0x84)
+        self.i2c.write_byte_data(self.MAG_ADDR, 0x51, 0x04)
+        self.i2c.write_byte_data(self.MAG_ADDR, 0x52, 0x16)
 
-                angle_old = angle_new
-                self.geomag.get_mag()
-                angle_new = self.geomag.theta
-                if angle_new > 180: angle_new -=360
-
-                angle_changed = self.angle_difference(angle_old, angle_new)
-                angle_diff = self.angle_difference(angle_new, angle_target)
-                
-                overshoot = abs(angle_changed)-abs(angle_diff)
-                duty = duty - int(overshoot/10)
-                duty = min(max(duty, 10),50)
-                print(f"now:{angle_new}")
-                print(f"diff:{angle_diff}")
-                print("")
-
-                if -threshold < angle_diff < threshold:
-                    break
-            print(f"now   :{angle_new}")
-            print(f"diff  :{angle_diff}")
-        except KeyboardInterrupt:
-            self.changeduty(0,0)
-            print("\nKeyboardInterrupt")
-        
-        print(f"count :{i}")
-        self.changeduty(0,0)
-    
-    def rotate_pid(self, angle, threshold=3.0):
-        P = 0.1
-        I = 0.08
-        D = 0.5
-
-        self.geomag.get_mag()
-        angle_new = self.geomag.theta
-        if angle_new > 180: angle_new -=360
-        angle_diff = angle
-        angle_target = angle_new + angle
-        if angle_target > 180:
-            angle_target -= 360
-        elif angle_target < -180:
-            angle_target += 360
-
-        duty = (P * angle)
-    
-    def stack(self, duty_R=30, duty_L=30):
-        self.geomag.get_mag()
-        theta_stack = self.geomag.theta
-        while True:
-            self.geomag.get_mag()
-            theta_past = self.geomag.theta
-            self.rotate(90, threshold=20)
-            self.forward(duty_R=random.randint(int(duty_R/2), duty_R), duty_L=random.randint(int(duty_L/2), duty_L), time_sleep=0.05, tick_dutymax=5)
-            time.sleep(2)
-            self.changeduty(0, 0)
-            time.sleep(0.5)
-            self.geomag.get_mag()
-            theta_now = self.geomag.theta
-            if (self.angle_difference(theta_past, theta_now)<10): print("stack")
-            else: break
-        self.geomag.get_mag()
-        self.rotate(self.angle_difference(self.geomag.theta,theta_stack)+90)
-    
-    def get_up(self):
-        duty = 40
-
-        for i in range(100):
-            angle = self.geomag.angle_to_gravity()
-            if angle >= 20:
-                duty = int(angle*0.8)
-                if angle <= 40:
-                    duty = int(angle*0.5)
-                duty = max(min(duty, 50),10)
-                self.changeduty(duty, duty)
-                time.sleep(0.01)
-            else:
-                break
-        
-        self.changeduty(5, 5)
         time.sleep(0.5)
-        self.changeduty(0, 0)
-        time.sleep(1)
-        #self.changeduty(10, 10)
-        #time.sleep(0.5)
 
-    def end(self):
-        self.pwms["rightIN1"].stop()
-        self.pwms["rightIN2"].stop()
-        self.pwms["leftIN1"].stop()
-        self.pwms["leftIN2"].stop()
-        GPIO.output(self.rightIN1, False)
-        GPIO.output(self.rightIN2, False)
-        GPIO.output(self.leftIN1, False)
-        GPIO.output(self.leftIN2, False)
-        GPIO.cleanup()
+    def mag_value(self):
+            data = [0, 0, 0, 0, 0, 0, 0, 0]
+            mag_data = [0.0, 0.0, 0.0]
+            try:
+                    for i in range(8):
+                            data[i] = self.i2c.read_byte_data(self.MAG_ADDR, self.MAG_R_ADDR + i)
+                    for i in range(3):
+                            if i != 2:
+                                    mag_data[i] = ((data[2*i + 1] * 256) + (data[2*i] & 0xF8)) / 8
+                                    if mag_data[i] > 4095:
+                                            mag_data[i] -= 8192
+                            else:
+                                    mag_data[i] = ((data[2*i + 1] * 256) + (data[2*i] & 0xFE)) / 2
+                                    if mag_data[i] > 16383:
+                                            mag_data[i] -= 32768
+            except IOError as e:
+                    print("I/O error({0}): {1}".format(e.errno, e.strerror))
+            return mag_data
 
+
+    def get_mag(self):
+        while True:
+            try:
+                mag = self.mag_value()
+                self.mag_x = mag[0]
+                self.mag_y = mag[1]
+                self.mag_z = mag[2]
+                break
+            except:
+                time.sleep(0.1)
+
+
+        if self.calibrated:
+            self.normalize()
+            self.theta_absolute = 180 - math.atan2(self.mag_y, self.mag_x)*180/math.pi
+
+        ###
+        self.theta_absolute -= 90
+        if(self.theta_absolute <= 0):
+            self.theta_absolute += 360
+        ###
+
+        self.theta = self.theta_absolute
+    
+    def normalize(self):
+        self.mag_x = (self.mag_x - self.aves[0]) / self.rads[0]
+        self.mag_y = (self.mag_y - self.aves[1]) / self.rads[1]
+        self.mag_z = (self.mag_z - self.aves[2]) / self.rads[2]
 
 def main():
-    t = 3
-    duty = 30
-    try:
-        print("setup")
-        motor = Motor()
+    with open ('/home/pi/TANE2025/prep/calibration_geomag.csv', 'r') as f :# goal座標取得プログラムより取得
+        reader = csv.reader(f)
+        line = [row for row in reader]
+        rads = [float(line[1][i]) for i in range(3)]
+        aves = [float(line[2][i]) for i in range(3)]
+        f.close()
+    mag3 = Mag3(calibrated=True, rads=rads,aves=aves)
+    while True:
+        mag3.get_mag()
+        print(f"mag_x:{mag3.mag_x},mag_y:{mag3.mag_y},mag_z:{mag3.mag_z}")
+        print(f"theta_absolute:{mag3.theta_absolute}")
+        print(f"theta:{mag3.theta}")
+        time.sleep(0.5)
 
-        # motor.rotate(40, threshold=1.0)
-        # return 
-
-        
-        args = sys.argv
-        duty = 50
-        t = 8
-        if len(args) >= 2:
-            duty = int(args[1])
-            if len(args) >= 3:
-                t = int(args[2])
-        motor.forward(duty, t)
-        print("stop")
-        motor.changeduty(0, 0)
-        
-
-        # print("forward fin.\nreverse start")
-        # motor.forward(-duty, -duty, 0.05, tick_dutymax=5)
-        # time.sleep(t)
-        
-        # print("stop")
-        # motor.changeduty(0, 0)
-        # time.sleep(t)
-        # print("reverse fin.")
-        
-        #motor.rotate(angle=90)
-        # モータ初期化
-        motor.end()
-        print("finish")
-
-    except KeyboardInterrupt:
-        motor.end()
-        print("\nInterrupted")
 
 if __name__ == "__main__":
-    print("main")
     main()
+
