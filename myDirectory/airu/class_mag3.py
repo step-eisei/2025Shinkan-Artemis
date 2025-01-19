@@ -7,6 +7,15 @@ import csv
 
 class Mag3:
 
+# レジスタアドレス
+    REG_WIA = 0x0F  # Who am I レジスタ
+    REG_CNTL1 = 0x1B  # 制御レジスタ1
+    REG_CNTL2 = 0x1C  # 制御レジスタ2
+    REG_CNTL3 = 0x1D  # 制御レジスタ3
+    REG_CNTL4 = 0x5C  # 制御レジスタ4
+    REG_CNTL5 = 0x5D  # 制御レジスタ5
+    REG_DATAX = 0x10  # X軸データレジスタ（下位ビット）
+
     def __init__(self, calibrated=False, rads=[1.0, 1.0, 1.0], aves=[0.0, 0.0, 0.0]):
         self.theta=-1
         self.theta_absolute=-1
@@ -18,52 +27,48 @@ class Mag3:
         self.mag_z = 0
 
         # I2Cのアドレス指定
-        self.MAG_ADDR = 0x13
-        self.MAG_R_ADDR = 0x42
+        self.MAG_ADDR = 0x0E
+        self.MAG_R_ADDR = 0x1D
         self.i2c = SMBus(1)
-        # レジスタアドレス
-        REG_WIA = 0x0F  # Who am I レジスタ
-        REG_CNTL1 = 0x1B  # 制御レジスタ1
-        REG_CNTL2 = 0x1C  # 制御レジスタ2
-        REG_CNTL3 = 0x1D  # 制御レジスタ3
-        REG_CNTL4 = 0x5C  # 制御レジスタ4
-        REG_CNTL5 = 0x5D  # 制御レジスタ5
-        REG_DATAX = 0x10  # X軸データレジスタ（下位ビット）
 
         # mag_data_setup : 地磁気値をセットアップ
-        data = self.i2c.read_byte_data(self.MAG_ADDR, 0x4B)
+        data = self.i2c.read_byte_data(self.MAG_ADDR, self.REG_WIA)
         if(data == 0):
                 self.i2c.write_byte_data(self.MAG_ADDR, 0x4B, 0x83)
                 time.sleep(0.5)
-        self.i2c.write_byte_data(self.MAG_ADDR, 0x4B, 0x01)
-        self.i2c.write_byte_data(self.MAG_ADDR, 0x4C, 0x00)
-        self.i2c.write_byte_data(self.MAG_ADDR, 0x4E, 0x84)
-        self.i2c.write_byte_data(self.MAG_ADDR, 0x51, 0x04)
-        self.i2c.write_byte_data(self.MAG_ADDR, 0x52, 0x16)
+        self.i2c.write_byte_data(self.MAG_ADDR, self.REG_CNTL1, 0x80)
+        self.i2c.write_byte_data(self.MAG_ADDR, self.REG_CNTL4, 0x00)
+        self.i2c.write_byte_data(self.MAG_ADDR, self.REG_CNTL5, 0x00)
+        self.i2c.write_byte_data(self.MAG_ADDR, self.REG_CNTL2, 0x08)
+        self.i2c.write_byte_data(self.MAG_ADDR, self.REG_CNTL3, 0x40)
 
         time.sleep(0.5)
 
     def mag_value(self):
-            data = [0, 0, 0, 0, 0, 0, 0, 0]
-            mag_data = [0.0, 0.0, 0.0]
             try:
-                    for i in range(8):
-                            data[i] = self.i2c.read_byte_data(self.MAG_ADDR, self.MAG_R_ADDR + i)
-                    for i in range(3):
-                            if i != 2:
-                                    mag_data[i] = ((data[2*i + 1] * 256) + (data[2*i] & 0xF8)) / 8
-                                    if mag_data[i] > 4095:
-                                            mag_data[i] -= 8192
-                            else:
-                                    mag_data[i] = ((data[2*i + 1] * 256) + (data[2*i] & 0xFE)) / 2
-                                    if mag_data[i] > 16383:
-                                            mag_data[i] -= 32768
+                    data = self.i2c.read_i2c_block_data(self.MAG_ADDR, self.REG_DATAX, 6)
+                    x = (data[1] << 8) | data[0]
+                    y = (data[3] << 8) | data[2]
+                    z = (data[5] << 8) | data[4]
+                    
+                    if x >= 32768:
+                            x -= 65536
+                    if y >= 32768:
+                            y -= 65536
+                    if z >= 32768:
+                            z -= 65536
+                    mag_data = [x, y, z]
+
+    
+                    
             except IOError as e:
                     print("I/O error({0}): {1}".format(e.errno, e.strerror))
+                    mag_data = [0, 0, 0]
+            #print(mag_data)
             return mag_data
 
 
-    def get_mag3(self):
+    def get_mag(self):
         while True:
             try:
                 mag = self.mag_value()
@@ -73,6 +78,7 @@ class Mag3:
                 break
             except:
                 time.sleep(0.1)
+                print("get_mag error")
 
 
         if self.calibrated:
@@ -93,7 +99,7 @@ class Mag3:
         self.mag_z = (self.mag_z - self.aves[2]) / self.rads[2]
 
 def main():
-    with open ('/home/pi/TANE2025/prep/calibration_geomag.csv', 'r') as f :# goal座標取得プログラムより取得
+    with open ('/home/pi/TANE2025/myDirectory/airu/calibration_geomag.csv', 'r') as f :# goal座標取得プログラムより取得
         reader = csv.reader(f)
         line = [row for row in reader]
         rads = [float(line[1][i]) for i in range(3)]

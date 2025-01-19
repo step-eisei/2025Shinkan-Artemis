@@ -1,14 +1,12 @@
-#dev calibration_geomag.py
-#
+
 import sys
-sys.path.append("/home/pi/TANE2025")
-sys.path.append("/home/pi/TANE2025/module")
+
 import time
 import datetime
 import csv
-#from module.class_9axis import Mag3
+
 from class_mag3 import Mag3
-from module.class_motor import Motor
+from class_motor import Motor
 
 def percentpick(listdata, p):
         n = int(len(listdata) *p/100)
@@ -70,7 +68,7 @@ motor.geomag.calibrated = True
 print(f"rads:{motor.geomag.rads}")
 print(f"aves:{motor.geomag.aves}")
 
-with open('calibration_geomag.csv', 'w') as f:
+with open('/home/pi/TANE2025/myDirectory/airu/calibration_geomag.csv', 'w') as f:
     writer = csv.writer(f)
     writer.writerow(["x, y, z"])
     writer.writerows([motor.geomag.rads, motor.geomag.aves])
