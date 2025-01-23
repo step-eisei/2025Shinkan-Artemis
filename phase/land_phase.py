@@ -1,7 +1,7 @@
 import sys
 sys.path.append("/home/pi/TANE2025/")
 from module import class_pressure
-#from phase import subthread
+from phase import subthread
 import time
 
 class Land:
@@ -12,8 +12,8 @@ class Land:
 
         if subth == None:
             pass
-            #self.subth = subthread.Subthread(pressure=self.get_pressure)
-            #self.subth.run()
+            self.subth = subthread.Subthread(pressure=self.get_pressure)
+            self.subth.run()
         else:                    self.subth = subth
 
         self.sky=sky   #上空まで上がったか判定するときの大気圧の変化の閾値 要調整
@@ -55,7 +55,7 @@ class Land:
         i=0
         start_sky_time = time.time()
         limit_sky_time = 999999999 # 上空検知してから15分経過したら強制的に着地判定
-        while   (time.time() - start_sky_time< limit_sky_time):
+        while   i<=10 and (time.time() - start_sky_time< limit_sky_time):
             self.get_pressure.read() #毎回pressure更新
             print(self.get_pressure.pressure)
             if self.start_pressure-self.get_pressure.pressure < self.land: #閾値暫定
@@ -91,11 +91,11 @@ class Land:
   
 
     def run(self):
-        #self.subth.phase=0
-        #self.sky_pressure()
-        #self.subth.record(comment="sky")
+        self.subth.phase=0
+        self.sky_pressure()
+        self.subth.record(comment="sky")
         self.land_pressure()
-        #self.subth.record(comment="land")
+        self.subth.record(comment="land")
 
 def main(sky=1.0, land=0.1): #上空判定，地上判定の閾値
     try:
