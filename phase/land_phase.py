@@ -4,6 +4,7 @@ from module import class_pressure
 from phase import subthread
 import time
 
+
 class Land:
     
     def __init__(self,get_pressure=None,subth=None,sky=30.0, land=0.2): #地上気圧測定
