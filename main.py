@@ -4,7 +4,6 @@ from module.class_nicrom   import Nicrom
 from module.class_motor    import Motor
 from module.class_distance import Distance
 from module.class_gps      import Gps
-from module.class_9axis    import Nineaxis
 from module.class_yolo     import CornDetect
 # phase import
 from phase.land_phase       import Land
