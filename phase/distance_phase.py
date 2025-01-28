@@ -3,7 +3,7 @@ import sys
 sys.path.append("/home/pi/TANE2025/")
 from module import class_distance
 from module import class_motor
-from function import cameraFunctions
+from function.get_object_theta_and_proportion import get_object_theta_and_proportion
 from phase import subthread
 import time
 import math
@@ -56,7 +56,7 @@ class DistancePhase:
             for m in range(20):
                 _, image = self.camera.read()
             image = cv2.flip(image, -1)
-            _, prop = cameraFunctions.scan(self.cone_colour, image)
+            _, prop = get_object_theta_and_proportion(self.cone_colour, image)
 
             if(distance > 2 and distance < 200 and prop > 10):
                 i = 0
