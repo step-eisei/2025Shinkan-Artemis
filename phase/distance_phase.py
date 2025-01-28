@@ -5,6 +5,7 @@ from module import class_distance
 from module import class_motor
 from function.get_object_theta_and_proportion import get_object_theta_and_proportion
 from phase import subthread
+from const import CONE_COLOUR
 import time
 import math
 import numpy as np
@@ -24,7 +25,7 @@ class DistancePhase:
             self.subth.run()
         else:                self.subth = subth
 
-        self.cone_colour = [160, 20]
+        self.cone_colour = CONE_COLOUR
 
 
     def run(self):

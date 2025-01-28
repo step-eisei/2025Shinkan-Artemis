@@ -6,6 +6,7 @@ from module import class_motor
 from module import class_distance
 from phase import subthread
 from function.get_object_theta_and_proportion import get_object_theta_and_proportion
+from const import CONE_COLOUR
 import time
 import math
 import cv2
@@ -32,7 +33,7 @@ class CameraPhase:
         # const
         self.angle_thres = 15
         self.image_size = [640, 480]
-        self.cone_colour = [160, 10]
+        self.cone_colour = CONE_COLOUR
         #####
         self.ratio = 0.55
         #####
