@@ -40,7 +40,7 @@ while True:
         # データ出力
         with open(filename, "a") as f:
             writer = csv.writer(f)
-            writer.writerow([time.time()-first_time, pressure_data, low_g_acc3_data])
+            writer.writerow([time.time()-first_time, pressure_data, low_g_acc3_data[0], low_g_acc3_data[1], low_g_acc3_data[2], low_g_acc3_data[3]])
 
         # インターバル  0.1秒
         time.sleep(interval)
@@ -68,4 +68,4 @@ with open(fall_velocity_from_low_g_acc3_file_name, "w") as f:
     fall_velocity_from_acc = 0
     for i in range(len(time_list)-1):
         fall_velocity_from_acc += ((low_g_acc3_data_list[i+1][3]-1)+(low_g_acc3_data_list[i][3]-1))/2 * 9.8 * (time_list[i+1] - time_list[i])
-        writer.writerow([time_list[i], low_g_acc3_data_list[i], fall_velocity_from_acc])
+        writer.writerow([time_list[i], low_g_acc3_data_list[i][0], low_g_acc3_data_list[i][1], low_g_acc3_data_list[i][2], low_g_acc3_data_list[i][3], fall_velocity_from_acc])
