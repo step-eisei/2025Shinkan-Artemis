@@ -10,6 +10,9 @@ import csv
 
 # ファイル名
 filename = "/home/pi/TANE2025/record/test/fall_val_test_{0:%Y%m%d-%H%M%S}.csv".format(datetime.datetime.now())
+with open(filename, "a") as f:
+    writer = csv.writer(f)
+    writer.writerow(["time[s]", "pressure[hPa]", "acc_x[g]", "acc_y[g]", "acc_z[g]"])
 
 # データ取得間隔
 interval = 0.1
@@ -50,7 +53,7 @@ while True:
 fall_velocity_from_pressure_file_name = "/home/pi/TANE2025/record/test/fall_velocity_from_pressure_{0:%Y%m%d-%H%M%S}.csv".format(datetime.datetime.now())
 with open(fall_velocity_from_pressure_file_name, "w") as f:
     writer = csv.writer(f)
-    writer.writerow(["time", "pressure", "fall_velocity[m]"])
+    writer.writerow(["time", "pressure[hPa]", "fall_velocity[m/s]"])
     for i in range(len(time_list)-1):
         hight = (pressure_data_list[i+1] - pressure_data_list[i]) * 10
         fall_velocity = hight / (time_list[i+1] - time_list[i])
@@ -60,7 +63,7 @@ with open(fall_velocity_from_pressure_file_name, "w") as f:
 fall_velocity_from_low_g_acc3_file_name = "/home/pi/TANE2025/record/test/fall_velocity_from_low_g_acc3_{0:%Y%m%d-%H%M%S}.csv".format(datetime.datetime.now())
 with open(fall_velocity_from_low_g_acc3_file_name, "w") as f:
     writer = csv.writer(f)
-    writer.writerow(["time", "low_g_acc3", "fall_velocity[m]"])
+    writer.writerow(["time", "acc_x[g]", "acc_y[g]", "acc_z[g]", "fall_velocity[m/s]"])
 
     fall_velocity_from_acc = 0
     for i in range(len(time_list)-1):
