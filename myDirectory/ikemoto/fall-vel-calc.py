@@ -16,6 +16,51 @@ with open(file_path, "r") as csvfile:
         time_data.append(float(row[0]))  # time[s]
         acc_norm_data.append(float(row[5]))  # acc_norm[g]
 
+
+# Plotting the modified acc_norm graph
+plt.figure(figsize=(10, 6))
+plt.plot(
+    time_data,
+    acc_norm_data,
+    label="acc_norm[g]",
+    color="r",
+)
+plt.xlabel("Time [s]")
+plt.ylabel("Acceleration Norm [g]")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Cut out data between 0s to 25s and reverse time
+calib_time_data = []
+calib_acc_norm_data = []
+
+for t, acc in zip(time_data, acc_norm_data):
+    if 25 <= t <= 40:
+        calib_time_data.append(t)
+        calib_acc_norm_data.append(acc)
+
+# Plotting the modified acc_norm graph
+plt.figure(figsize=(10, 6))
+plt.plot(
+    calib_time_data,
+    calib_acc_norm_data,
+    label="acc_norm[g]",
+    color="r",
+)
+
+mean_calib_acc_norm = (
+    sum(calib_acc_norm_data) / len(calib_acc_norm_data) if calib_acc_norm_data else 0
+)
+print(f"Mean of calib_acc_norm_data: {mean_calib_acc_norm}")
+
+
+plt.xlabel("Time [s]")
+plt.ylabel("Acceleration Norm [g]")
+plt.legend()
+plt.grid(True)
+plt.show()
+
 # Cut out data between 0s to 25s and reverse time
 cut_time_data = []
 cut_acc_norm_data = []
@@ -41,7 +86,9 @@ plt.grid(True)
 plt.show()
 
 # Modify acc_norm data
-modified_acc_norm_data = [1 - acc for acc in cut_acc_norm_data]
+# modified_acc_norm_data = [1 - acc for acc in cut_acc_norm_data]
+modified_acc_norm_data = [mean_calib_acc_norm - acc for acc in cut_acc_norm_data]
+
 
 # Plotting the modified acc_norm graph
 plt.figure(figsize=(10, 6))
@@ -88,4 +135,5 @@ plt.ylabel("Velocity [m/s^2]")
 plt.title("Integral modified acc")
 plt.legend()
 plt.grid(True)
+plt.ylim(-4, 6)  # Show y grid until 6 m/s^2
 plt.show()
