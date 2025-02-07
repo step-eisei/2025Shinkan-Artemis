@@ -137,3 +137,17 @@ plt.legend()
 plt.grid(True)
 plt.ylim(-4, 6)  # Show y grid until 6 m/s^2
 plt.show()
+
+import csv
+
+# Define the CSV file path
+csv_file_path = "velocity_data.csv"
+
+# Write cut_time_data and velocitys to the CSV file
+with open(csv_file_path, mode="w", newline="") as file:
+    writer = csv.writer(file)
+    # Write the header
+    writer.writerow(["Time [s]", "Velocity [m/s^2]"])
+    # Write the data
+    for time, velocity in zip(cut_time_data, velocitys):
+        writer.writerow([time, velocity])
