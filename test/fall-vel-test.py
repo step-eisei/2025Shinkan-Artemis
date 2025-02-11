@@ -102,7 +102,7 @@ with open(fall_velocity_from_low_g_acc3_file_name, "w") as f:
         for j in range(3):
             # 台形積分による数値積分
             if j == 2:
-                fall_velocity_from_acc[i] += (
+                fall_velocity_from_acc[j] += (
                     (
                         (low_g_acc3_data_list[i + 1][j] - 1)
                         + (low_g_acc3_data_list[i][j] - 1)
@@ -112,7 +112,7 @@ with open(fall_velocity_from_low_g_acc3_file_name, "w") as f:
                     * (time_list[i + 1] - time_list[i])
                 )
             else:
-                fall_velocity_from_acc[i] += (
+                fall_velocity_from_acc[j] += (
                     ((low_g_acc3_data_list[i + 1][j]) + (low_g_acc3_data_list[i][j]))
                     / 2
                     * 9.8
@@ -126,13 +126,13 @@ with open(fall_velocity_from_low_g_acc3_file_name, "w") as f:
                 low_g_acc3_data_list[i][1],
                 low_g_acc3_data_list[i][2],
                 low_g_acc3_data_list[i][3],
-                fall_velocity_from_acc[i][0],
-                fall_velocity_from_acc[i][1],
-                fall_velocity_from_acc[i][2],
+                fall_velocity_from_acc[0],
+                fall_velocity_from_acc[1],
+                fall_velocity_from_acc[2],
                 math.sqrt(
-                    fall_velocity_from_acc[i][0] ** 2
-                    + fall_velocity_from_acc[i][1] ** 2
-                    + fall_velocity_from_acc[i][2] ** 2
+                    fall_velocity_from_acc[0] ** 2
+                    + fall_velocity_from_acc[1] ** 2
+                    + fall_velocity_from_acc[2] ** 2
                 ),
             ]
         )
