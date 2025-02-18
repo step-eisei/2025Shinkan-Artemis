@@ -4,24 +4,29 @@ import RPi.GPIO as GPIO
 import time
 import random
 import math
-import class_9axis
+import class_mag3
+from class_mag3 import Mag3
 import csv
 # right = A, left = B
 
 class Motor():
-    def __init__(self, pwm=100, rightIN1=36, rightIN2=38, leftIN1=37, leftIN2=40, geomag=None):
+    def __init__(self, pwm=100, rightIN1=16, rightIN2=18, leftIN1=19, leftIN2=21, geomag=None):#19 21 16 18
         self.rightIN1 = rightIN1
         self.rightIN2 = rightIN2
         self.leftIN1 = leftIN1
         self.leftIN2 = leftIN2
         if geomag == None:
-            with open ('/home/pi/TANE2025/prep/calibration_geomag.csv', 'r') as f :# goal座標取得プログラムより取得
-                reader = csv.reader(f)
-                line = [row for row in reader]
-                rads = [float(line[1][i]) for i in range(3)]
-                aves = [float(line[2][i]) for i in range(3)]
-            f.close()
-            self.geomag = class_9axis.Nineaxis(True, rads, aves)
+                try:
+                    with open ('/home/pi/TANE2025/myDirectory/airu/calibration_geomag.csv', 'r') as f :# goal座標取得プログラムより取得
+                        reader = csv.reader(f)
+                        line = [row for row in reader]
+                        rads = [float(line[1][i]) for i in range(3)]
+                        aves = [float(line[2][i]) for i in range(3)]
+                    f.close()
+                except:
+                        rads=[1.0, 1.0, 1.0]
+                        aves=[0.0, 0.0, 0.0]
+                self.geomag = class_mag3.Mag3(True, rads, aves)
         else: self.geomag = geomag
         self.geomag.calibrated = True
         self.duty_R_now = -1
