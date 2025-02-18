@@ -19,8 +19,8 @@ class GpsPhase:
         self.distance = 0
         self.stack_distance = 1
         self.stack_acc_diff = (
-            170 * (10 ** (-6)) * math.sqrt(100)
-        )  # ADXL367: Low noise to 170 µg/√Hz, low_g_acc3_output_rate = 100 Hz
+            170 * (10 ** (-6)) * math.sqrt(100) * 5
+        )  # ADXL367: Low noise to 170 µg/√Hz, low_g_acc3_output_rate = 100 Hz, 調整用の係数を掛けている
         self.theta_nineaxis = 0
         self.theta_goal = 0
         self.theta_modify_past = 0
@@ -122,6 +122,9 @@ class GpsPhase:
     def detect_stack(self):  # スタック判定
         self.stack_state = 0  # 判定用
         self.stack_state_acc = 0  # 判定用
+        self.last_acc_x = self.LowGAcc3.acc_x
+        self.last_acc_y = self.LowGAcc3.acc_y
+        self.last_acc_z = self.LowGAcc3.acc_z
 
         while True:
             self.update_status()
