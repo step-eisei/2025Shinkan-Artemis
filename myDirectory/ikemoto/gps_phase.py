@@ -34,9 +34,9 @@ class GpsPhase:
         self.stack = False
 
         if low_g_acc3 == None:
-            self.LowGAcc3 = class_low_g_acc3()  # class_low_g_acc3のインスタンスを生成
+            self.LowGAcc3 = class_low_g_acc3.LowGAcc3()  # class_low_g_acc3のインスタンスを生成
         else:
-            self.LowGAcc3 = low_g_acc3
+            self.LowGAcc3 = low_g_acc3.LowGAcc3()
 
         if motor == None:
             self.Motor = class_motor.Motor()  # class_motorのインスタンスを生成
