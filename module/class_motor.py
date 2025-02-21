@@ -14,7 +14,7 @@ import csv
 
 class Motor:
     def __init__(
-        self, pwm=100, rightIN1=36, rightIN2=28, leftIN1=37, leftIN2=40, geomag=None
+        self, pwm=100, rightIN1=36, rightIN2=38, leftIN1=37, leftIN2=40, geomag=None
     ):
         self.rightIN1 = rightIN1
         self.rightIN2 = rightIN2
