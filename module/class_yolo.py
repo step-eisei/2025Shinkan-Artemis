@@ -105,6 +105,18 @@ class CornDetect:
 
             # Process detections
             ratio = min(self.test_size[0] / img.shape[0], self.test_size[1] / img.shape[1])
+            # print(outputs)
+            max_score = 0
+            max_score_idx = 0
+            output = outputs[0]
+            for i in range(len(output)):
+                score = output[i][4] * output[i][5]
+                print(f"{score=}")
+                if score > max_score:
+                    max_score = score
+                    max_score_idx = i
+
+            print(f"{max_score=}, {max_score_idx=}")
             output = outputs[0]
             if output is None:
                 return c1, c2, img
@@ -115,9 +127,8 @@ class CornDetect:
             # preprocessing: resize
             bboxes /= ratio
             print(f"bboxes {bboxes}")
-            # TODO: 2つ以上検知したとき不具合が出るので要修正 scoreが一番高いのにする？
-            c1 = [clip_x(bboxes[0][0]), clip_y(bboxes[0][1])]
-            c2 = [clip_x(bboxes[0][2]), clip_y(bboxes[0][3])]
+            c1 = [clip_x(bboxes[max_score_idx][0]), clip_y(bboxes[max_score_idx][1])]
+            c2 = [clip_x(bboxes[max_score_idx][2]), clip_y(bboxes[max_score_idx][3])]
             cls = output[:, 6]
             scores = output[:, 4] * output[:, 5]
 
