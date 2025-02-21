@@ -4,6 +4,7 @@
 # TANE2025用class_yolo. NSE2023と同じようなインターフェースにしたつもり
 
 import random
+
 # from loguru import logger
 
 import cv2
@@ -19,6 +20,7 @@ from yolox.exp import get_exp
 from yolox.utils import fuse_model, get_model_info, postprocess, vis
 
 IMAGE_EXT = [".jpg", ".jpeg", ".webp", ".bmp", ".png"]
+
 
 # Take photo
 def take_photo(camera):
@@ -42,33 +44,35 @@ def take_photo(camera):
     #####
     return image
 
+
 def clip_x(value):
-    return max(min(int(value),640),0)
+    return max(min(int(value), 640), 0)
+
 
 def clip_y(value):
-    return max(min(int(value),480),0)
+    return max(min(int(value), 480), 0)
 
 
 class CornDetect:
     def __init__(
-            self,
-            exp=get_exp('/home/pi/TANE2025/module/yolo_files/configfrom_yolox_s.py'),
-            weights='/home/pi/TANE2025/module/yolo_files/cone/best_ckpt.pth',
-            cls_names=COCO_CLASSES,
-            decoder=None,
-            device="cpu",
+        self,
+        exp=get_exp("/home/pi/TANE2025/module/yolo_files/configfrom_yolox_s.py"),
+        weights="/home/pi/TANE2025/module/yolo_files/cone/best_ckpt.pth",
+        cls_names=COCO_CLASSES,
+        decoder=None,
+        device="cpu",
     ):
         self.weight = weights
         self.cls_names = cls_names
         self.decoder = decoder
         self.num_classes = exp.num_classes
         self.confthre = exp.test_conf
-        self.nmsthre= exp.nmsthre
+        self.nmsthre = exp.nmsthre
         self.test_size = exp.test_size
         self.device = device
         self.preproc = ValTransform(legacy=False)
 
-        exp = get_exp('/home/pi/TANE2025/module/yolo_files/configfrom_yolox_s.py')
+        exp = get_exp("/home/pi/TANE2025/module/yolo_files/configfrom_yolox_s.py")
         exp.test_conf = 0.25
         exp.nmsthre = 0.45
         exp.test_size = (640, 640)
@@ -79,7 +83,7 @@ class CornDetect:
         self.model.load_state_dict(ckpt["model"])
 
         # Get names and colors
-        self.names = ['person']
+        self.names = ["person"]
         self.colors = [[random.randint(0, 255) for _ in range(3)] for _ in self.names]
         self.count = 0
 
@@ -99,16 +103,26 @@ class CornDetect:
             if self.decoder is not None:
                 outputs = self.decoder(outputs, dtype=outputs.type())
             outputs = postprocess(
-                outputs, self.num_classes, self.confthre,
-                self.nmsthre, class_agnostic=True
+                outputs,
+                self.num_classes,
+                self.confthre,
+                self.nmsthre,
+                class_agnostic=True,
             )
 
             # Process detections
-            ratio = min(self.test_size[0] / img.shape[0], self.test_size[1] / img.shape[1])
+            ratio = min(
+                self.test_size[0] / img.shape[0], self.test_size[1] / img.shape[1]
+            )
             # print(outputs)
+
+            # scoreが最大のbboxを取得する
             max_score = 0
             max_score_idx = 0
             output = outputs[0]
+            if output is None:
+                return c1, c2, img
+
             for i in range(len(output)):
                 score = output[i][4] * output[i][5]
                 print(f"{score=}")
@@ -117,9 +131,7 @@ class CornDetect:
                     max_score_idx = i
 
             print(f"{max_score=}, {max_score_idx=}")
-            output = outputs[0]
-            if output is None:
-                return c1, c2, img
+
             output = output.cpu()
 
             bboxes = output[:, 0:4]
@@ -135,13 +147,13 @@ class CornDetect:
             img_res = vis(img, bboxes, scores, cls, 0.35, self.cls_names)
 
             return c1, c2, img_res
-    
+
     def save_image(self, img, count):
-        cv2.imwrite(f'output_{count}.jpg', img)
+        cv2.imwrite(f"output_{count}.jpg", img)
 
 
 def main():
-    exp = get_exp('/home/pi/TANE2025/module/yolo_files/configfrom_yolox_s.py')
+    exp = get_exp("/home/pi/TANE2025/module/yolo_files/configfrom_yolox_s.py")
     exp.test_conf = 0.25
     exp.nmsthre = 0.45
     exp.test_size = (640, 640)
@@ -152,19 +164,19 @@ def main():
     count = 0
     while True:
         image = take_photo(camera)
-        #image = cv2.imread("Cone_0001.JPG")
-        #image = cv2.imread('Cone_0002.JPG')
+        # image = cv2.imread("Cone_0001.JPG")
+        # image = cv2.imread('Cone_0002.JPG')
         c1, c2, estimated_image = test.estimate(img=image)
         print(c1, c2)
-        #cv2.namedWindow('estimated_image', cv2.WINDOW_NORMAL)
-        cv2.imshow('estimated_image', estimated_image)
+        # cv2.namedWindow('estimated_image', cv2.WINDOW_NORMAL)
+        cv2.imshow("estimated_image", estimated_image)
         test.save_image(estimated_image, count)
         count += 1
 
-        if cv2.waitKey(1) & 0xFF == ord('1'):
+        if cv2.waitKey(1) & 0xFF == ord("1"):
             break
-        #key = cv2.waitKey(0)
-        #cv2.destroyAllWindows()
+        # key = cv2.waitKey(0)
+        # cv2.destroyAllWindows()
 
 
 if __name__ == "__main__":
