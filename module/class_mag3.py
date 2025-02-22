@@ -99,7 +99,7 @@ class Mag3:
         self.mag_z = (self.mag_z - self.aves[2]) / self.rads[2]
 
 def main():
-    with open ('/home/pi/TANE2025/myDirectory/airu/calibration_geomag.csv', 'r') as f :# goal座標取得プログラムより取得
+    with open ('/home/pi/TANE2025/prep/calibration_geomag.csv', 'r') as f :# goal座標取得プログラムより取得
         reader = csv.reader(f)
         line = [row for row in reader]
         rads = [float(line[1][i]) for i in range(3)]
