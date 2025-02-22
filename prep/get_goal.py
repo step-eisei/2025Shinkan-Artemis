@@ -2,7 +2,7 @@ import time
 import csv
 import numpy as np
 import sys
-sys.path.append('/home/stepeisei/TANE2025/module/')
+sys.path.append('/home/pi/TANE2025/module/')
 import class_gps
 
 GPS = class_gps.Gps()
