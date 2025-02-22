@@ -72,8 +72,8 @@ class Mag3:
         while True:
             try:
                 mag = self.mag_value()
-                self.mag_x = mag[0]
-                self.mag_y = -1*mag[1]
+                self.mag_x = -1*mag[1]
+                self.mag_y = mag[0]
                 self.mag_z = mag[2]
                 break
             except:
