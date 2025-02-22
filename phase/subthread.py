@@ -36,7 +36,7 @@ class Subthread:
         if rotor == None:
             self.factory = PiGPIOFactory()
             self.rotor = RotaryEncoder(PIN_ROTAR_A, PIN_ROTAR_B, wrap=True, max_steps=180, pin_factory=factory)
-            rotor.steps = 0
+            self.rotor.steps = 0
         else:
             self.factory = factory
             self.rotor = rotor
