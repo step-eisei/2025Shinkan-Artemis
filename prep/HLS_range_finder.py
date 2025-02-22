@@ -25,7 +25,7 @@ cv2.createTrackbar('Lightness Lower', 'HLS Range Detector', light_lower, 255, no
 cv2.createTrackbar('Lightness Upper', 'HLS Range Detector', light_upper, 255, nothing)
 
 # カメラのキャプチャ
-cap = cv2.VideoCapture(2)
+cap = cv2.VideoCapture(0)
 
 while True:
     ret, frame = cap.read()
