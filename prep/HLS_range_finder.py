@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import csv  # 追加
 
 # HLSの範囲の初期値
 hue_lower = 0
@@ -46,7 +47,7 @@ while True:
     l_upper = cv2.getTrackbarPos("Lightness Upper", "HLS Range Detector")
 
     # 二値化マスクの作成
-    lower_hls = np.array([h_lower, l_lower, s_lower])  # HLSの順序に注意
+    lower_hls = np.array([h_lower, l_lower, s_lower])  # HLSの順序
     upper_hls = np.array([h_upper, l_upper, s_upper])
     mask = cv2.inRange(hls_frame, lower_hls, upper_hls)
 
@@ -66,14 +67,15 @@ s_upper = cv2.getTrackbarPos("Saturation Upper", "HLS Range Detector")
 l_lower = cv2.getTrackbarPos("Lightness Lower", "HLS Range Detector")
 l_upper = cv2.getTrackbarPos("Lightness Upper", "HLS Range Detector")
 
-# スライダーの値をファイルに出力
-with open("HLS_slider_values.txt", "w") as f:
-    f.write(f"Hue Lower: {h_lower}\n")
-    f.write(f"Hue Upper: {h_upper}\n")
-    f.write(f"Saturation Lower: {s_lower}\n")
-    f.write(f"Saturation Upper: {s_upper}\n")
-    f.write(f"Lightness Lower: {l_lower}\n")
-    f.write(f"Lightness Upper: {l_upper}\n")
+# スライダーの値をCSV形式でファイルに出力
+with open("HLS_slider_values.csv", "w", newline="") as csvfile:
+    csvwriter = csv.writer(csvfile)
+    # ヘッダーの書き込み
+    csvwriter.writerow(["Parameter", "Lower", "Upper"])
+    # 値の書き込み
+    csvwriter.writerow(["Hue", h_lower, h_upper])
+    csvwriter.writerow(["Lightness", l_lower, l_upper])
+    csvwriter.writerow(["Saturation", s_lower, s_upper])
 
 # リソースの解放
 cap.release()
