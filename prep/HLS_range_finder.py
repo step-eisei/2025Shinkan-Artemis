@@ -67,7 +67,7 @@ l_lower = cv2.getTrackbarPos("Lightness Lower", "HLS Range Detector")
 l_upper = cv2.getTrackbarPos("Lightness Upper", "HLS Range Detector")
 
 # スライダーの値をファイルに出力
-with open("slider_values.txt", "w") as f:
+with open("HLS_slider_values.txt", "w") as f:
     f.write(f"Hue Lower: {h_lower}\n")
     f.write(f"Hue Upper: {h_upper}\n")
     f.write(f"Saturation Lower: {s_lower}\n")
