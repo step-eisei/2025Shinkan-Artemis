@@ -17,6 +17,7 @@ from phase.subthread import Subthread
 import time
 
 def main():
+    GPIO.output(29, False)
     goal = False
 
     pressure = Pressure()
