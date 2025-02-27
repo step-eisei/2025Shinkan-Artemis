@@ -1,4 +1,7 @@
+import sys
+sys.path.append("/home/pi/TANE2024/phase/")
 # class import
+import RPi.GPIO as GPIO
 from module.class_pressure import Pressure
 from module.class_nicrom   import Nicrom
 from module.class_motor    import Motor
@@ -17,6 +20,8 @@ from phase.subthread import Subthread
 import time
 
 def main():
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setup(29, GPIO.OUT)
     GPIO.output(29, False)
     goal = False
 
