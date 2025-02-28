@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Complex Marker Icons from CSV</title>
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+      }
+      .flag-icon {
+        position: relative;
+        left: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <gmp-map id="map" zoom="10" map-id="DEMO_MAP_ID"></gmp-map>
+
+    <script>
+      async function loadApiKey() {
+        const response = await fetch('/api-key');
+        const data = await response.json();
+        return data.apiKey;
+      }
+
+      // Function to parse CSV data
+      function parseCSV(csv) {
+        const lines = csv.trim().split("\n");
+        const result = [];
+        const headers = lines[0].split(",");
+        
+        for (let i = 1; i < lines.length; i++) {
+          const obj = {};
+          const currentline = lines[i].split(",");
+          
+          for (let j = 0; j < headers.length; j++) {
+            obj[headers[j]] = currentline[j];
+          }
+          result.push(obj);
+        }
+        
+        return result;
+      }
+
+      // Function to get the image based on phase
+      function getImageForPhase(phase) {
+        switch (phase) {
+          case 'land':
+            return 'red_circle.png';
+          case 'deployment':
+            return 'brown_circle.png';
+          case 'gps':
+            return 'yellow_circle.png';
+          case 'camera':
+            return 'blue_circle.png';
+          case 'distance':
+            return 'purple_circle.png';
+          default:
+            return 'green_circle.png';
+        }
+      }
+
+      // Function to add markers to the map
+      function addMarkers(map, data) {
+        data.forEach(entry => {
+          const marker = document.createElement("gmp-advanced-marker");
+          marker.setAttribute("position", `${entry.latitude},${entry.longitude}`);
+          marker.setAttribute("title", `Location: ${entry.latitude}, ${entry.longitude}`);
+          
+          const img = document.createElement("img");
+          img.className = "flag-icon";
+          img.src = getImageForPhase(entry.phase);
+          
+          marker.appendChild(img);
+          map.appendChild(marker);
+        });
+      }
+
+      // Fetch CSV data and initialize map
+      window.onload = async () => {
+        // Load API key
+        const apiKey = await loadApiKey();
+        console.log(apiKey)
+        
+        fetch('data.csv')
+          .then(response => response.text())
+          .then(csvText => {
+            const parsedData = parseCSV(csvText);
+            if (parsedData.length > 0) {
+              const firstEntry = parsedData[0];
+              const mapElement = document.getElementById('map');
+              mapElement.setAttribute('center', `${firstEntry.latitude},${firstEntry.longitude}`);
+              addMarkers(mapElement, parsedData);
+            }
+          })
+          .catch(error => console.error('Error fetching CSV:', error));
+
+        // Load Google Maps script dynamically
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&loading=async&libraries=marker&v=beta&solution_channel=GMP_CCS_complexmarkers_v3`;
+        script.defer = true;
+        document.head.appendChild(script);
+      };
+    </script>
+
+  </body>
+</html>
