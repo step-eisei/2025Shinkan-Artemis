@@ -86,6 +86,7 @@ class CameraPhase:
         angle_before = self.geomag.theta_absolute
 
         self.motor.forward(duty_target=60, t=forward_time)
+        self.subth.record(comment=f"duty-60-60")
         time.sleep(0.5)
 
         self.geomag.get_mag()
@@ -100,6 +101,7 @@ class CameraPhase:
         if abs(angle_after - angle_before) >= 30:
             print(f"rotate angle    :{-angle_diff}")
             self.motor.rotate(-angle_diff * 0.8)
+            self.subth.record(comment=f"rotate-{-angle_diff*0.8}")
         self.geomag.get_mag()
         angle_now = self.geomag.theta_absolute
         print(f"angle{angle_now}")
@@ -184,6 +186,7 @@ class CameraPhase:
                     self.subth.record(comment=f"cone is in the image", coneangle=angle)
                     self.subth.record(comment="rotate for cone")
                     self.motor.rotate(angle)
+                    self.subth.record(comment=f"rotate-{angle}")
 
                 else:  # red cone is NOT in the image
                     print("cone is NOT in the image")
@@ -200,6 +203,7 @@ class CameraPhase:
                         self.subth.record(comment="[dist] approach cone")
                         self.forward(dist / 150)
                         self.motor.changeduty(0, 0)
+                        self.subth.record(comment=f"duty-0-0")
 
                     elif i < 12:  # その場で回転
                         i += 1
@@ -207,10 +211,13 @@ class CameraPhase:
                         if i <= 6:
                             if i % 2 == 1:
                                 self.motor.rotate(30 * i)
+                                self.subth.record(comment=f"rotate-{30*i}")
                             else:
                                 self.motor.rotate(-30 * i)
+                                self.subth.record(comment=f"rotate-{-30*i}")
                         else:
                             self.motor.rotate(-30)
+                            self.subth.record(comment=f"rotate-{-30}")
 
                     else:  # back to phase_GPS
                         self.forward(2)
@@ -249,6 +256,7 @@ class CameraPhase:
             self.motor.get_up()
 
             self.motor.rotate(30)
+            self.subth.record(comment=f"rotate-{30}")
             self.geomag.get_mag()
             new_angle = self.geomag.theta_absolute
 
@@ -272,6 +280,7 @@ class CameraPhase:
         now_angle = self.geomag.theta_absolute
         diff_angle = self.motor.angle_difference(now_angle, cone_angle)
         self.motor.rotate(diff_angle)
+        self.subth.record(comment=f"rotate-{diff_angle}")
 
     def track_cone(self, frame, c1, c2):
         video_flag = True
@@ -356,6 +365,7 @@ class CameraPhase:
                 duty_R = duty - pd
                 duty_L = duty + pd
                 self.motor.changeduty(duty_R, duty_L)
+                self.subth.record(comment=f"duty-{self.duty_R}-{self.duty_L}")
             else:
                 break
 
@@ -365,9 +375,12 @@ class CameraPhase:
 
         for i in range(10):
             self.motor.changeduty(30 - i * 3, 30 - i * 3)
+            self.subth.record(comment=f"duty-{30 - i * 3}-{30 - i * 3}")
         self.motor.changeduty(5, 5)
+        self.subth.record(comment=f"duty-5-5")
         time.sleep(1)
         self.motor.changeduty(0, 0)
+        self.subth.record(comment=f"duty-0-0")
         self.camera.set(cv2.CAP_PROP_BUFFERSIZE, 1)
         cv2.destroyAllWindows()
 
