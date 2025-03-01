@@ -200,6 +200,7 @@ class CameraPhase:
                         self.subth.record(comment="[dist] approach cone")
                         self.forward(dist / 150)
                         self.motor.changeduty(0, 0)
+                        self.subth.record(comment=f"duty-0-0")
 
                     elif i < 12:  # その場で回転
                         i += 1
@@ -356,6 +357,7 @@ class CameraPhase:
                 duty_R = duty - pd
                 duty_L = duty + pd
                 self.motor.changeduty(duty_R, duty_L)
+                self.subth.record(comment=f"duty-{self.duty_R}-{self.duty_L}")
             else:
                 break
 
@@ -365,9 +367,12 @@ class CameraPhase:
 
         for i in range(10):
             self.motor.changeduty(30 - i * 3, 30 - i * 3)
+            self.subth.record(comment=f"duty-{30 - i * 3}-{30 - i * 3}")
         self.motor.changeduty(5, 5)
+        self.subth.record(comment=f"duty-5-5")
         time.sleep(1)
         self.motor.changeduty(0, 0)
+        self.subth.record(comment=f"duty-0-0")
         self.camera.set(cv2.CAP_PROP_BUFFERSIZE, 1)
         cv2.destroyAllWindows()
 
