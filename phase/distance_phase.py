@@ -94,8 +94,10 @@ class DistancePhase:
                         angle = angle - 360
                     if i % 2 == 0:
                         self.motor.rotate(angle)  # 左に旋回
+                        self.subth.record(comment=f"rotate-{angle}")
                     else:
                         self.motor.rotate(-angle)  # 右に旋回
+                        self.subth.record(comment=f"rotate-{-angle}")
                     i += 1
                 else:  # 現在位置から直進して離れてフェーズを離れる
                     self.motor.forward(duty_target=40, t=5)
