@@ -71,7 +71,7 @@ class DistancePhase:
                 print("detected")
                 if distance < 20 and prop > 20:
                     self.motor.forward(duty_target=30, t=0.8)
-                    self.subth.record(comment=f"duty-30-30")
+                    self.subth.record(comment=f"forward-30-0.8")
                     self.subth.record(comment="distanceend", coneangle=0)
                     print("finished")
                     self.camera.release()
@@ -82,7 +82,7 @@ class DistancePhase:
                     self.motor.forward(
                         duty_target=duty, t=distance / 30
                     )  # 距離に応じて前進
-                    self.subth.record(comment=f"duty-{duty}-{duty}")
+                    self.subth.record(comment=f"forward-{duty}-{distance/30}")
                     self.motor.changeduty(0, 0)
                     self.subth.record(comment=f"duty-0-0")
             else:
@@ -101,7 +101,7 @@ class DistancePhase:
                     i += 1
                 else:  # 現在位置から直進して離れてフェーズを離れる
                     self.motor.forward(duty_target=40, t=5)
-                    self.subth.record(comment=f"duty-40-40")
+                    self.subth.record(comment=f"forward-40-5")
                     self.subth.record(comment="notdistancephase")
                     time.sleep(5)
                     self.motor.changeduty(0, 0)
