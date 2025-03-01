@@ -97,6 +97,7 @@ class Deploy:
             print("did not detect parachute")
 
         self.motor.forward(50, 2)
+        self.subth.record(comment=f"forward-50-2")
         self.turn_to_goal()
 
         self.subth.record(comment="deployment")
