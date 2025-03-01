@@ -90,6 +90,7 @@ class Deploy:
             print(f"detected parachute prop:{prop}, angle:{angle}")
             if phi <= 40:
                 self.motor.rotate(90)
+                self.subth.record(comment=f"rotate-{90}")
             else:
                 print(f"upside down")
         else:
@@ -116,6 +117,7 @@ class Deploy:
         print(f"theta_relative{self.theta_relative}")
 
         self.motor.rotate(self.theta_relative * 0.8)
+        self.subth.record(comment=f"rotate-{self.theta_relative * 0.8}")
 
 
 def main():
