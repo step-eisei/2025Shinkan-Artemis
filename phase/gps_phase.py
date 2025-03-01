@@ -144,9 +144,11 @@ class GpsPhase:
             if self.turn_direction == "right":
                 print("escape to right")
                 self.Motor.rotate(angle=100)
+                self.subth.record(comment=f"rotate-{100}")
             elif self.turn_direction == "left":
                 print("escape to left")
                 self.Motor.rotate(angle=-100)
+                self.subth.record(comment=f"rotate-{100}")
 
             self.update_status()
             before_x, before_y = self.x, self.y
