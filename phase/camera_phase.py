@@ -86,6 +86,7 @@ class CameraPhase:
         angle_before = self.geomag.theta_absolute
 
         self.motor.forward(duty_target=60, t=forward_time)
+        self.subth.record(comment=f"duty-60-60")
         time.sleep(0.5)
 
         self.geomag.get_mag()
