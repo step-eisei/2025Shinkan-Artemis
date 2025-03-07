@@ -14,12 +14,13 @@ import csv
 
 class Motor:
     def __init__(
-        self, pwm=100, rightIN1=38, rightIN2=36, leftIN1=40, leftIN2=37, geomag=None
+        self, pwm=100, rightIN1=36, rightIN2=38, leftIN1=40, leftIN2=37, geomag=None
     ):
         self.rightIN1 = rightIN1
         self.rightIN2 = rightIN2
         self.leftIN1 = leftIN1
         self.leftIN2 = leftIN2
+        
         if geomag == None:
             try:
                 with open(
@@ -37,6 +38,7 @@ class Motor:
         else:
             self.geomag = geomag
         self.geomag.calibrated = True
+        
         self.duty_R_now = -1
         self.duty_L_now = -1
 
@@ -279,7 +281,7 @@ def main():
         print("setup")
         motor = Motor()
 
-        # motor.rotate(40, threshold=1.0)
+        motor.rotate(40, threshold=1.0)
         # return
 
         args = sys.argv
