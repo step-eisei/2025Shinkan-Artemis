@@ -73,9 +73,9 @@ class Land:
                 print("yet")
             if n == 0:
                 now_pressure = self.get_pressure.pressure
-                time.sleep(0.5)
+                time.sleep(0.6)
                 self.get_pressure.read()
-                if self.get_pressure.pressure - now_pressure > 0.20:
+                if self.get_pressure.pressure - now_pressure > 0.4:
                     n += 1
                 else:
                     n = 0
