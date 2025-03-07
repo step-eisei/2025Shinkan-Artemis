@@ -9,7 +9,7 @@ import time
 class Land:
 
     def __init__(
-        self, get_pressure=None, subth=None, sky=0.5, land=0.3
+        self, get_pressure=None, subth=None, sky=1.0, land=0.3
     ):  # 地上気圧測定
         if get_pressure == None:
             self.get_pressure = class_pressure.Pressure()
