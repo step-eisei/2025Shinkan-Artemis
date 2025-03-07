@@ -80,7 +80,7 @@ class Land:
                 else:
                     n = 0
                     print("fall_yet")
-            if n >= 1:
+            if n >= 3:
                 start_sky_time = time.time()
                 limit_sky_time = 120  # 上空検知をスタート
                 n = -1
