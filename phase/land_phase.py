@@ -73,7 +73,7 @@ class Land:
                 print("yet")
             if n == 0:
                 now_pressure = self.get_pressure.pressure
-                time.sleep(5)
+                time.sleep(0.5)
                 self.get_pressure.read()
                 if self.get_pressure.pressure - now_pressure > 0.2:
                     n += 1
@@ -82,7 +82,7 @@ class Land:
                     print("fall_yet")
             if n >= 1:
                 start_sky_time = time.time()
-                limit_sky_time = 15 * 60  # 上空検知をスタート
+                limit_sky_time = 120  # 上空検知をスタート
                 n = -1
                 print("fall start")
 
