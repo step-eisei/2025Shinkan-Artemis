@@ -20,7 +20,6 @@ class Distance:
 
         #データ取得 5回値を取ってその平均を取る
         cycle=1
-        error=0
         error_count = 0
         while(cycle<6):
             GPIO.setup(self.TRIG,GPIO.OUT)
@@ -37,16 +36,15 @@ class Distance:
                 if(signaloff-debugtime>1):
                     GPIO.output(self.TRIG, False)
                     print("Error. timepass is too long.")
-                    error=1
                     error_count+=1
                     break
-            if(error==0):
-                while GPIO.input(self.ECHO) == 1:
-                    signalon = time.time()
-                timepassed = signalon - signaloff
-                distance = timepassed * 17000
-                distance_data.append(distance)
-                cycle+=1
+    
+            while GPIO.input(self.ECHO) == 1:
+                signalon = time.time()
+            timepassed = signalon - signaloff
+            distance = timepassed * 17000
+            distance_data.append(distance)
+            cycle+=1
             if(error_count == 5):
                 self.distance = 10000
                 return -1
