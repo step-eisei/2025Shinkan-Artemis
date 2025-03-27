@@ -5,7 +5,7 @@ sys.path.append("/home/pi/TANE2025/module/")
 from module import class_yolo
 from module import class_motor
 from module import class_distance
-from phase import subthread
+#from phase import subthread
 from function.get_object_theta_and_proportion import get_object_theta_and_proportion
 from const import CONE_COLOUR
 import time
@@ -15,7 +15,7 @@ import numpy as np
 
 
 class CameraPhase:
-    def __init__(self, motor=None, yolo=None, distance=None, subth=None):
+    def __init__(self, motor=None, yolo=None, distance=None, ):
         if yolo == None:
             self.yolo = class_yolo.CornDetect()
         else:
@@ -33,11 +33,11 @@ class CameraPhase:
         else:
             self.distance = distance
 
-        if subth == None:
-            self.subth = subthread.Subthread(distance=self.distance, motor=self.motor)
-            self.subth.run()
-        else:
-            self.subth = subth
+        #if subth == None:
+        #    self.subth = subthread.Subthread(distance=self.distance, motor=self.motor)
+        #    self.subth.run()
+        #else:
+        #    self.subth = subth
 
         # const
         self.angle_thres = 15
@@ -86,7 +86,7 @@ class CameraPhase:
         angle_before = self.geomag.theta_absolute
 
         self.motor.forward(duty_target=60, t=forward_time)
-        self.subth.record(comment=f"duty-60-60")
+    #    self.subth.record(comment=f"duty-60-60")
         time.sleep(0.5)
 
         self.geomag.get_mag()
@@ -101,14 +101,14 @@ class CameraPhase:
         if abs(angle_after - angle_before) >= 30:
             print(f"rotate angle    :{-angle_diff}")
             self.motor.rotate(-angle_diff * 0.8)
-            self.subth.record(comment=f"rotate-{-angle_diff*0.8}")
+        #    self.subth.record(comment=f"rotate-{-angle_diff*0.8}")
         self.geomag.get_mag()
         angle_now = self.geomag.theta_absolute
         print(f"angle{angle_now}")
         print("")
 
     def run(self):
-        self.subth.phase = 3
+    #    self.subth.phase = 3
         i = 0  # コーンが見つからずその場で回転した回数
         j = 0  # 写真の番号
 
@@ -145,7 +145,7 @@ class CameraPhase:
             cv2.waitKey(1)
             j += 1
             cv2.imwrite(f"/home/pi/TANE2025/image/yolo_image{j}.jpg", yolo_image)
-            self.subth.record(comment=f"took photo saved as image/yolo_image{j}.jpg")
+    #        self.subth.record(comment=f"took photo saved as image/yolo_image{j}.jpg")
             print(c1, c2)  # print the coordinates of the cone
             if c1 != [-1, -1] and c2 != [-1, -1]:
                 roi = image[c1[1] : c2[1], c1[0] : c2[0]]
@@ -162,7 +162,7 @@ class CameraPhase:
                 abs(self.calc_angle(c1, c2)) <= self.angle_thres
             ):  # red cone in the center of image
                 print("cone is in the centre")
-                self.subth.record(comment=f"cone is in the centre")
+                #self.subth.record(comment=f"cone is in the centre")
                 # angle = self.calc_angle(c1, c2)
                 # self.motor.rotate(angle*0.8)
                 print("forward")
@@ -173,7 +173,7 @@ class CameraPhase:
                 # print(f"distance estimated from yolo{dist_from_camera}")
 
                 # forward_time = min(dist_from_camera * 0.4, 4)
-                self.subth.record(comment="[camera] approach cone", coneangle=0)
+                #self.subth.record(comment="[camera] approach cone", coneangle=0)
                 # self.forward(forward_time)
                 self.track_cone(image, c1, c2)
 
@@ -183,45 +183,45 @@ class CameraPhase:
                     i = 0
                     angle = self.calc_angle(c1, c2)
                     print(f"angle{angle}")
-                    self.subth.record(comment=f"cone is in the image", coneangle=angle)
-                    self.subth.record(comment="rotate for cone")
-                    self.motor.rotate(angle)
-                    self.subth.record(comment=f"rotate-{angle}")
+                    #self.subth.record(comment=f"cone is in the image", coneangle=angle)
+                    #self.subth.record(comment="rotate for cone")
+                    #self.motor.rotate(angle)
+                    #self.subth.record(comment=f"rotate-{angle}")
 
                 else:  # red cone is NOT in the image
                     print("cone is NOT in the image")
-                    self.subth.record(comment=f"cone is NOT in the image")
+                    #self.subth.record(comment=f"cone is NOT in the image")
                     if (
                         dist < 100 and prop > 20
                     ):  # コーンがカメラで見つからなくても、距離センサが反応して、画像が十分に赤ければ前進
                         i = 0
                         print("cone is close")
-                        self.subth.record(comment=f"dist sens detected", coneangle=0)
+                        #self.subth.record(comment=f"dist sens detected", coneangle=0)
                         print("forward")
                         # self.motor.forward(30, 30, 0.05, tick_dutymax=5)#距離に応じて前進
                         # time.sleep(dist/30)
-                        self.subth.record(comment="[dist] approach cone")
+                        #self.subth.record(comment="[dist] approach cone")
                         self.forward(dist / 150)
                         self.motor.changeduty(0, 0)
-                        self.subth.record(comment=f"duty-0-0")
+                        #self.subth.record(comment=f"duty-0-0")
 
                     elif i < 12:  # その場で回転
                         i += 1
-                        self.subth.record(comment="can not find cone rotate")
+                        #self.subth.record(comment="can not find cone rotate")
                         if i <= 6:
                             if i % 2 == 1:
                                 self.motor.rotate(30 * i)
-                                self.subth.record(comment=f"rotate-{30*i}")
+                                #self.subth.record(comment=f"rotate-{30*i}")
                             else:
                                 self.motor.rotate(-30 * i)
-                                self.subth.record(comment=f"rotate-{-30*i}")
+                                #self.subth.record(comment=f"rotate-{-30*i}")
                         else:
                             self.motor.rotate(-30)
-                            self.subth.record(comment=f"rotate-{-30}")
+                            #self.subth.record(comment=f"rotate-{-30}")
 
                     else:  # back to phase_GPS
                         self.forward(2)
-                        self.subth.record(comment="back to gps phase")
+                        #self.subth.record(comment="back to gps phase")
                         print("back to phase_gps")
                         self.camera.release()
                         return False
@@ -256,7 +256,7 @@ class CameraPhase:
             self.motor.get_up()
 
             self.motor.rotate(30)
-            self.subth.record(comment=f"rotate-{30}")
+            #self.subth.record(comment=f"rotate-{30}")
             self.geomag.get_mag()
             new_angle = self.geomag.theta_absolute
 
@@ -280,7 +280,7 @@ class CameraPhase:
         now_angle = self.geomag.theta_absolute
         diff_angle = self.motor.angle_difference(now_angle, cone_angle)
         self.motor.rotate(diff_angle)
-        self.subth.record(comment=f"rotate-{diff_angle}")
+        #self.subth.record(comment=f"rotate-{diff_angle}")
 
     def track_cone(self, frame, c1, c2):
         video_flag = True
@@ -365,7 +365,7 @@ class CameraPhase:
                 duty_R = duty - pd
                 duty_L = duty + pd
                 self.motor.changeduty(duty_R, duty_L)
-                self.subth.record(comment=f"duty-{self.duty_R}-{self.duty_L}")
+                #self.subth.record(comment=f"duty-{self.duty_R}-{self.duty_L}")
             else:
                 break
 
@@ -375,12 +375,12 @@ class CameraPhase:
 
         for i in range(10):
             self.motor.changeduty(30 - i * 3, 30 - i * 3)
-            self.subth.record(comment=f"duty-{30 - i * 3}-{30 - i * 3}")
+            #self.subth.record(comment=f"duty-{30 - i * 3}-{30 - i * 3}")
         self.motor.changeduty(5, 5)
-        self.subth.record(comment=f"duty-5-5")
+        #self.subth.record(comment=f"duty-5-5")
         time.sleep(1)
         self.motor.changeduty(0, 0)
-        self.subth.record(comment=f"duty-0-0")
+        #self.subth.record(comment=f"duty-0-0")
         self.camera.set(cv2.CAP_PROP_BUFFERSIZE, 1)
         cv2.destroyAllWindows()
 
