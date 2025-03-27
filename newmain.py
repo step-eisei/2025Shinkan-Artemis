@@ -33,7 +33,7 @@ def main():
     #gps =      Gps()
     yolo =     CornDetect()
 
-    subth =          Subthread(pressure=pressure, gps=gps, distance=distance, motor=motor)
+    #subth =          Subthread(pressure=pressure, gps=gps, distance=distance, motor=motor)
     land =           Land(get_pressure=pressure)
     deployment =     Deploy(motor=motor, nicrom=nicrom, dist_sens=distance, gps=gps)
     #gps_phase =      GpsPhase(motor=motor, gps=gps, subth=subth)
