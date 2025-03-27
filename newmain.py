@@ -11,13 +11,6 @@ import time
 
 
 def main():
-
-
-
-    distance = Distance()
-    #gps =      Gps()
-    yolo =     CornDetect()
-
   
     camera =         CameraPhase()
     dist_phase =     DistancePhase()
