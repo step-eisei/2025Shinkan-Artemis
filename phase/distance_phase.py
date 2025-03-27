@@ -38,6 +38,8 @@ class DistancePhase:
         #self.subth.phase = 4
         duty = 50
         i = 0
+        self.motor.get_up()
+
 
         self.camera = cv2.VideoCapture(-1, cv2.CAP_V4L2)
         self.camera.set(cv2.CAP_PROP_EXPOSURE, 5)
@@ -57,6 +59,8 @@ class DistancePhase:
             return False
 
         while True:
+            self.motor.get_up()
+
             print("read")
             self.distance.reading()
             distance = self.distance.distance  # get distance
