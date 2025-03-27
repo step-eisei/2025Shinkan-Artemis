@@ -19,11 +19,27 @@ from phase.distance_phase   import DistancePhase
 
 import time
 
-camera = CameraPhase()
-dist_phase =     DistancePhase()
-
 
 def main():
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setup(29, GPIO.OUT)
+    GPIO.output(29, False)
+    goal = False
+
+    pressure = Pressure()
+    nicrom =   Nicrom()
+    motor =    Motor()
+    distance = Distance()
+    #gps =      Gps()
+    yolo =     CornDetect()
+
+    subth =          Subthread(pressure=pressure, gps=gps, distance=distance, motor=motor)
+    land =           Land(get_pressure=pressure)
+    deployment =     Deploy(motor=motor, nicrom=nicrom, dist_sens=distance, gps=gps)
+    #gps_phase =      GpsPhase(motor=motor, gps=gps, subth=subth)
+    camera =         CameraPhase(motor=motor, yolo=yolo, distance=distance)
+    dist_phase =     DistancePhase(motor=motor, distance=distance)
+
     try:
         camera.main()
     except KeyboardInterrupt:
