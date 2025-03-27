@@ -15,58 +15,31 @@ from phase.gps_phase        import GpsPhase
 from phase.camera_phase     import CameraPhase
 from phase.distance_phase   import DistancePhase
 # others
-from phase.subthread import Subthread
+#from phase.subthread import Subthread
 
 import time
 
+camera = CameraPhase()
+dist_phase =     DistancePhase()
+
+
 def main():
-    GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(29, GPIO.OUT)
-    GPIO.output(29, False)
-    goal = False
-
-    pressure = Pressure()
-    nicrom =   Nicrom()
-    motor =    Motor()
-    distance = Distance()
-    gps =      Gps()
-    yolo =     CornDetect()
-
-    subth =          Subthread(pressure=pressure, gps=gps, distance=distance, motor=motor)
-    land =           Land(get_pressure=pressure, subth=subth)
-    deployment =     Deploy(motor=motor, nicrom=nicrom, dist_sens=distance, gps=gps, subth=subth)
-    gps_phase =      GpsPhase(motor=motor, gps=gps, subth=subth)
-    camera =         CameraPhase(motor=motor, yolo=yolo, distance=distance, subth=subth)
-    dist_phase =     DistancePhase(motor=motor, distance=distance, subth=subth)
+    try:
+        camera.main()
+    except KeyboardInterrupt:
+            print("Keyboard Interrupt")
+            print("SKIP camera phase")
+            print("proceed to distance phase")
+    except Exception:
+        print("ERROR: camera phase")
+        print("proceed to distance phase")  
 
     try:
-        subth.run()
-   
-
-
-        while True:
-
-            try:
-                return_camera = False
-                return_camera = camera.run()
-            except Exception:
-                print("ERROR: camera phase")
-                print("proceed to distance phase")
-            
-            if return_camera == True:
-                try:
-                    goal = dist_phase.run()
-                except Exception:
-                    print("ERROR: distance phase")
-                    print("proceed to gps phase")
-            
-            if goal == True:
-                print("GOAL!")
-                break
+        dist_phase.main()
 
     except KeyboardInterrupt:
         print("\nInterrupted.")
-        subth.record(comment="end main")
+        #subth.record(comment="end main")
         motor.end()
         print("GPIO closed.")
 
