@@ -1,6 +1,7 @@
 import sys
 sys.path.append("/home/pi/TANE2024/phase/")
 
+import RPi.GPIO as GPIO
 
 from phase.camera_phase     import CameraPhase
 from phase.distance_phase   import DistancePhase
@@ -11,7 +12,9 @@ import time
 
 
 def main():
-  
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setup(29, GPIO.OUT)
+    GPIO.output(29, False)
     camera =         CameraPhase()
     dist_phase =     DistancePhase()
 
