@@ -3,6 +3,7 @@ sys.path.append("/home/pi/TANE2024/phase/")
 
 import RPi.GPIO as GPIO
 
+from module.class_motor    import Motor
 from phase.camera_phase     import CameraPhase
 from phase.distance_phase   import DistancePhase
 # others
@@ -15,11 +16,14 @@ def main():
     GPIO.setmode(GPIO.BOARD)
     GPIO.setup(29, GPIO.OUT)
     GPIO.output(29, False)
+    
     camera =         CameraPhase()
     dist_phase =     DistancePhase()
+    motor =    Motor()
+
 
     try:
-        camera.main()
+        camera.run()
         print("end camera phase")
     except KeyboardInterrupt:
             print("Keyboard Interrupt")
@@ -30,7 +34,7 @@ def main():
         print("proceed to distance phase")  
 
     try:
-        dist_phase.main()
+        dist_phase.run()
 
     except KeyboardInterrupt:
         print("\nInterrupted.")
