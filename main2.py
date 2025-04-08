@@ -396,7 +396,7 @@ def main():
         print("\nInterrupted.")
 
 
-CameraPhase.main()
+main()
 
 
 # 距離フェーズ
@@ -530,4 +530,4 @@ def main():
         print("\nInterrupted.")
 
 
-DistancePhase.main()
+main()
