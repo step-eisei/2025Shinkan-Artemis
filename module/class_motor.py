@@ -137,7 +137,7 @@ class Motor:
         return angle
 
     def rotate(self, angle, duty=28, threshold=3.0):
-    
+        #previous duty = 28(2025/4/8)
         self.geomag.get_mag()
         angle_new = self.geomag.theta
         if angle_new > 180:
