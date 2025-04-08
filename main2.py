@@ -388,6 +388,7 @@ class CameraPhase:
 def main():
     try:
         phase_camera = CameraPhase()
+        print("Camera Phase start")
         phase_camera.run()
         phase_camera.motor.end()
     except KeyboardInterrupt:
@@ -397,6 +398,7 @@ def main():
 
 
 main()
+print("proceed to distance phase")
 
 
 # 距離フェーズ
@@ -522,6 +524,7 @@ def main():
         #subth = subthread.Subthread(distance=distance, motor=motor)
         #subth.run()
         distance_phase = DistancePhase(distance=distance, motor=motor,)
+        print("distance phase start")
         distance_phase.run()
         distance_phase.motor.end()
     except KeyboardInterrupt:
