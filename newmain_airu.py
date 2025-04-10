@@ -24,9 +24,13 @@ def main():
     GPIO.setmode(GPIO.BOARD)
     goal = False
 
+    motor =          Motor()
+    distance = Distance()
+    yolo =     CornDetect()
+
     camera =         CameraPhase(motor=motor, yolo=yolo, distance=distance, subth=subth)
     dist_phase =     DistancePhase(motor=motor, distance=distance, subth=subth)
-    motor =          Motor()
+
 
 
     while True:
