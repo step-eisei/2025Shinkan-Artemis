@@ -1,6 +1,6 @@
 import sys
 
-sys.path.append("/home/pi/2025Shinkan_Artemis/module")
+sys.path.append("/home/pi/2025Shinkan-Artemis/module")
 import RPi.GPIO as GPIO
 import time
 import random
