@@ -28,6 +28,7 @@ def main():
     distance = Distance()
     yolo =     CornDetect()
 
+    subth =          Subthread(pressure=None, gps=None, distance=distance, motor=motor)
     camera =         CameraPhase(motor=motor, yolo=yolo, distance=distance, subth=subth)
     dist_phase =     DistancePhase(motor=motor, distance=distance, subth=subth)
 
