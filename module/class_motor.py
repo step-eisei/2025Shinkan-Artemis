@@ -43,7 +43,6 @@ class Motor:
         self.duty_L_now = -1
 
 
-        GPIO.cleanup() #GPIOピンを初期化
         GPIO.setmode(GPIO.BOARD)  # GPIOnを指定するように設定
         GPIO.setup(self.rightIN1, GPIO.OUT)
         GPIO.setup(self.rightIN2, GPIO.OUT)
