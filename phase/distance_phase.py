@@ -1,7 +1,7 @@
 # 距離フェーズ
 import sys
 
-sys.path.append("/home/pi/TANE2025/")
+sys.path.append("/home/pi/2025Shinkan-Artemis/")
 from module import class_distance
 from module import class_motor
 from function.get_object_theta_and_proportion import get_object_theta_and_proportion
