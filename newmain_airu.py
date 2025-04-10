@@ -15,7 +15,7 @@ from phase.deployment_phase import Deploy
 from phase.camera_phase     import CameraPhase
 from phase.distance_phase   import DistancePhase
 # others
-#from phase.subthread import Subthread
+from phase.subthread import Subthread
 
 import time
 
@@ -24,8 +24,8 @@ def main():
     GPIO.setmode(GPIO.BOARD)
     goal = False
 
-    camera =         CameraPhase()
-    dist_phase =     DistancePhase()
+    camera =         CameraPhase(motor=motor, yolo=yolo, distance=distance, subth=subth)
+    dist_phase =     DistancePhase(motor=motor, distance=distance, subth=subth)
     motor =          Motor()
 
 
