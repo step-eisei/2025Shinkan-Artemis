@@ -1,5 +1,5 @@
 import sys
-sys.path.append("/home/pi/TANE2024/phase/")
+sys.path.append("/home/pi/2025Shinkan-Artemis/phase/")
 # class import
 import RPi.GPIO as GPIO
 from module.class_pressure import Pressure
@@ -21,6 +21,7 @@ import time
 
 
 def main():
+    GPIO.setmode(GPIO.BOARD)
     goal = False
 
     camera =         CameraPhase()
