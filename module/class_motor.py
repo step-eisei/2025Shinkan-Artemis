@@ -1,6 +1,6 @@
 import sys
 
-sys.path.append("/home/pi/TANE2025/module")
+sys.path.append("/home/pi/2025Shinkan_Artemis/module")
 import RPi.GPIO as GPIO
 import time
 import random
@@ -42,6 +42,8 @@ class Motor:
         self.duty_R_now = -1
         self.duty_L_now = -1
 
+
+        GPIO.cleanup() #GPIOピンを初期化
         GPIO.setmode(GPIO.BOARD)  # GPIOnを指定するように設定
         GPIO.setup(self.rightIN1, GPIO.OUT)
         GPIO.setup(self.rightIN2, GPIO.OUT)
