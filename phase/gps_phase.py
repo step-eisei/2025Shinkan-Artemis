@@ -3,7 +3,7 @@ import numpy as np
 import sys
 import csv
 
-sys.path.append("/home/pi/TANE2025")
+sys.path.append("/home/pi/2025Shinkan-Artemis")
 import time
 import threading
 from module import class_motor

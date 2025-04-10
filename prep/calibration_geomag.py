@@ -1,6 +1,6 @@
 
 import sys
-sys.path.append("/home/pi/TANE2025/module")
+sys.path.append("/home/pi/2025Shinkan-Artemis/module")
 import time
 import datetime
 import csv
@@ -69,7 +69,7 @@ motor.geomag.calibrated = True
 print(f"rads:{motor.geomag.rads}")
 print(f"aves:{motor.geomag.aves}")
 
-with open('/home/pi/TANE2025/prep/calibration_geomag.csv', 'w') as f:
+with open('/home/pi/2025Shinkan-Artemis/prep/calibration_geomag.csv', 'w') as f:
     writer = csv.writer(f)
     writer.writerow(["x, y, z"])
     writer.writerows([motor.geomag.rads, motor.geomag.aves])

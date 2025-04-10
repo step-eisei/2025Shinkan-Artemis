@@ -1,6 +1,6 @@
 import sys
 
-sys.path.append("/home/pi/TANE2025/")
+sys.path.append("/home/pi/2025Shinkan-Artemis/")
 from module import class_pressure
 from phase import subthread
 import time

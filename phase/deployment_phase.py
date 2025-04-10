@@ -1,7 +1,7 @@
 import sys
 
-sys.path.append("/home/pi/TANE2025")
-sys.path.append("/home/pi/TANE2025/module")
+sys.path.append("/home/pi/2025Shinkan-Artemis")
+sys.path.append("/home/pi/2025Shinkan-Aremis/module")
 import datetime
 import csv
 import time

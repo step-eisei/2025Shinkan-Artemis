@@ -121,7 +121,7 @@ class HighGAcc3:
 
         def log_high_g_event(queue):
             now = datetime.datetime.now()
-            filename = "/home/pi/TANE2025/record/high_g_log_{0:%Y%m%d-%H%M%S}.csv".format(now)
+            filename = "/home/pi/2025Shinkan-Artemis/record/high_g_log_{0:%Y%m%d-%H%M%S}.csv".format(now)
             with open(filename, "w", newline="") as f:
                 csv_writer = csv.writer(f)
                 csv_writer.writerow(["time", "acc_x", "acc_y", "acc_z", "acc_norm"])
@@ -154,7 +154,7 @@ class HighGAcc3:
 def main():
     # logの設定
     # csv log file ready
-    fmt_name = "/home/pi/TANE2025/record/test/acc_logs_ADXL375_{0:%Y%m%d-%H%M%S}.csv".format(datetime.datetime.now())
+    fmt_name = "/home/pi/2025Shinkan-Artemis/record/test/acc_logs_ADXL375_{0:%Y%m%d-%H%M%S}.csv".format(datetime.datetime.now())
     f_acc_logs = codecs.open(fmt_name, mode='w', encoding="utf-8")
 
     header_value = u"yyyy-mm-dd hh:mm:ss.mmmmmm,x[g],y[g],z[g],norm[g]"

@@ -102,7 +102,7 @@ def scanprop(img_th):
 def get_object_theta_and_proportion(colour_range, img=None):
     # CSV ファイルから閾値を読み込む
     lower_thresholds, upper_thresholds = read_hsv_thresholds(
-        "/home/pi/TANE2025/prep/HSV_slider_values.csv"
+        "/home/pi/2025Shinkan-Artemis/prep/HSV_slider_values.csv"
     )
     lower_bound = np.array(
         [colour_range[0], lower_thresholds["Saturation"], lower_thresholds["Value"]]

@@ -49,7 +49,7 @@ class Subthread:
         
         DIFF_JST_FROM_UTC = 9
         jp_time = datetime.datetime.utcnow() + datetime.timedelta(hours=DIFF_JST_FROM_UTC)
-        self.recordname = '/home/pi/TANE2025/record/record_' + str(jp_time).replace(' ', '_').replace(':', '-').replace('.', '_') + '.csv'
+        self.recordname = '/home/pi/2025Shinkan-Artemis/record/record_' + str(jp_time).replace(' ', '_').replace(':', '-').replace('.', '_') + '.csv'
         with open(self.recordname, "w", newline="") as f:
             writer = csv.writer(f)
             writer.writerow(["comment", "time", "phase", "baro", "latitude", "longitude", "duty_R", "duty_L", "theta", "cornangle", "distance", "acc_x", "acc_y", "acc_z", "rotor_steps"])

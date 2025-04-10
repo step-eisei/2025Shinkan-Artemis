@@ -2,7 +2,7 @@ import time
 import csv
 import numpy as np
 import sys
-sys.path.append('/home/pi/TANE2025/module/')
+sys.path.append('/home/pi/2025Shinkan-Artemis/module/')
 import class_gps
 
 GPS = class_gps.Gps()
@@ -34,10 +34,10 @@ except KeyboardInterrupt:
 
     print(f"setting goal {goal_latitude}, {goal_longitude}")
 
-    with open('/home/pi/TANE2025/prep/goal.csv',mode='w',newline='') as f:
+    with open('/home/pi/2025Shinkan-Artemis/prep/goal.csv',mode='w',newline='') as f:
         writer = csv.writer(f)
         writer.writerow(["goal_latitude", "goal_longitude"])
 
-    with open('/home/pi/TANE2025/prep/goal.csv',mode='a',newline='') as f:
+    with open('/home/pi/2025Shinkan-Artemis/prep/goal.csv',mode='a',newline='') as f:
             writer = csv.writer(f)
             writer.writerow([goal_latitude, goal_longitude]) 

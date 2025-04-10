@@ -1,7 +1,7 @@
 import sys
 
-sys.path.append("/home/pi/TANE2025/")
-sys.path.append("/home/pi/TANE2025/module/")
+sys.path.append("/home/pi/2025Shinkan-Artemis/")
+sys.path.append("/home/pi/2025Shinkan-Artemis/module/")
 from module import class_yolo
 from module import class_motor
 from module import class_distance
@@ -86,7 +86,7 @@ class CameraPhase:
         angle_before = self.geomag.theta_absolute
 
         self.motor.forward(duty_target=60, t=forward_time)
-    #    self.subth.record(comment=f"duty-60-60")
+        #self.subth.record(comment=f"duty-60-60")
         time.sleep(0.5)
 
         self.geomag.get_mag()
@@ -144,7 +144,7 @@ class CameraPhase:
             cv2.imshow("Processed Image", yolo_image)
             cv2.waitKey(1)
             j += 1
-            cv2.imwrite(f"/home/pi/TANE2025/image/yolo_image{j}.jpg", yolo_image)
+            cv2.imwrite(f"/home/pi/2025Shinkan-Artemis/image/yolo_image{j}.jpg", yolo_image)
     #        self.subth.record(comment=f"took photo saved as image/yolo_image{j}.jpg")
             print(c1, c2)  # print the coordinates of the cone
             if c1 != [-1, -1] and c2 != [-1, -1]:
@@ -292,7 +292,7 @@ class CameraPhase:
                 "m", "p", "4", "v"
             )  # 動画保存時のfourcc設定（mp4用）
             video = cv2.VideoWriter(
-                "/home/pi/TANE2025/image/video.mp4", fourcc, fps, (w, h)
+                "/home/pi/2025Shinkan-Artemis/image/video.mp4", fourcc, fps, (w, h)
             )
 
         BUFFER = 3

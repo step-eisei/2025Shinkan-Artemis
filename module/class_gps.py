@@ -74,7 +74,7 @@ class Gps:
     
     #ゴールの座標の取得
     try:
-      with open ('/home/pi/TANE2025/prep/goal.csv', 'r') as f :# goal座標取得プログラムより取得
+      with open ('/home/pi/2025Shinkan-Artemis/prep/goal.csv', 'r') as f :# goal座標取得プログラムより取得
         reader = csv.reader(f)
         line = [row for row in reader]
         self.goal_lati = float(line[ 1 ] [ 0 ])

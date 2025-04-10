@@ -39,7 +39,7 @@ def main():
             print("proceed to distance phase")
     except Exception:
         print("ERROR: camera phase")
-        print("proceed to distance phase")  
+        print("proceed to distance phase")
 
     try:
         dist_phase.run()

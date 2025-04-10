@@ -13,7 +13,7 @@ import sys
 
 import torch
 
-sys.path.append("/home/pi/TANE2025/module/YOLOX/")
+sys.path.append("/home/pi/2025Shinkan-Artemis/module/YOLOX/")
 from yolox.data.data_augment import ValTransform
 from yolox.data.datasets import COCO_CLASSES
 from yolox.exp import get_exp
@@ -56,8 +56,8 @@ def clip_y(value):
 class CornDetect:
     def __init__(
         self,
-        exp=get_exp("/home/pi/TANE2025/module/yolo_files/configfrom_yolox_s.py"),
-        weights="/home/pi/TANE2025/module/yolo_files/cone/best_ckpt.pth",
+        exp=get_exp("/home/pi/2025Shinkn-Artemis/module/yolo_files/configfrom_yolox_s.py"),
+        weights="/home/pi/2025Shinkan-Artemis/module/yolo_files/cone/best_ckpt.pth",
         cls_names=COCO_CLASSES,
         decoder=None,
         device="cpu",
@@ -72,7 +72,7 @@ class CornDetect:
         self.device = device
         self.preproc = ValTransform(legacy=False)
 
-        exp = get_exp("/home/pi/TANE2025/module/yolo_files/configfrom_yolox_s.py")
+        exp = get_exp("/home/pi/2025Shinkan-Artemis/module/yolo_files/configfrom_yolox_s.py")
         exp.test_conf = 0.25
         exp.nmsthre = 0.45
         exp.test_size = (640, 640)
@@ -153,7 +153,7 @@ class CornDetect:
 
 
 def main():
-    exp = get_exp("/home/pi/TANE2025/module/yolo_files/configfrom_yolox_s.py")
+    exp = get_exp("/home/pi/2025Shinkan-Artemis/module/yolo_files/configfrom_yolox_s.py")
     exp.test_conf = 0.25
     exp.nmsthre = 0.45
     exp.test_size = (640, 640)

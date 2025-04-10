@@ -122,7 +122,7 @@ class Mag3:
 
 def main():
     with open(
-        "/home/pi/TANE2025/prep/calibration_geomag.csv", "r"
+        "/home/pi/2025Shinkan-Artemis/prep/calibration_geomag.csv", "r"
     ) as f:  # goal座標取得プログラムより取得
         reader = csv.reader(f)
         line = [row for row in reader]
