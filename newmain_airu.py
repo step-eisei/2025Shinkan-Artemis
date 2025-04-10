@@ -6,12 +6,12 @@ from module.class_pressure import Pressure
 from module.class_nicrom   import Nicrom
 from module.class_motor    import Motor
 from module.class_distance import Distance
-#from module.class_gps      import Gps
+from module.class_gps      import Gps
 from module.class_yolo     import CornDetect
 # phase import
 from phase.land_phase       import Land
 from phase.deployment_phase import Deploy
-#from phase.gps_phase        import GpsPhase
+from phase.gps_phase        import GpsPhase
 from phase.camera_phase     import CameraPhase
 from phase.distance_phase   import DistancePhase
 # others
