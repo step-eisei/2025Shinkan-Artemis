@@ -42,7 +42,7 @@ class Motor:
         self.duty_R_now = -1
         self.duty_L_now = -1
 
-
+        GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BOARD)  # GPIOnを指定するように設定
         GPIO.setup(self.rightIN1, GPIO.OUT)
         GPIO.setup(self.rightIN2, GPIO.OUT)
