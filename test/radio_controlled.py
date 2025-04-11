@@ -135,9 +135,9 @@ def main():
             elif key == " ":
                 print("停止")
                 motor.changeduty(duty_R=0, duty_L=0)
-            elif key == "q":
-                print("終了します")
-                break
+            #elif key == "q":
+            #    print("終了します")
+            #    break
 
             # 小休止を入れて入力ループを安定させる
             time.sleep(0.1)
