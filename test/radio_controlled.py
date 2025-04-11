@@ -112,9 +112,9 @@ def main():
     print("  d : 右旋回")
     print("  Space: 停止")
     print("  q : 終了")
-    
+
     # ここではPWMの duty 値をあらかじめ指定（必要に応じて調整可能）
-    duty_value = 50
+    duty_value = 10
 
     try:
         while True:
