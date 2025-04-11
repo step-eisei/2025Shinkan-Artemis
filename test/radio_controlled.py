@@ -114,7 +114,7 @@ def main():
     print("  q : 終了")
 
     # ここではPWMの duty 値をあらかじめ指定（必要に応じて調整可能）
-    duty_value = 10
+    duty_value = 20
 
     try:
         while True:
